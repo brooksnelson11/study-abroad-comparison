@@ -222,6 +222,30 @@
   .compare-picker { display: flex; gap: 8px; flex-wrap: wrap; margin: 14px 0; }
   .compare-picker .chip-toggle { font-size: 12px; }
   .compare-table-wrap { overflow-x: auto; }
+  /* Always-on picker at the top of the Compare tab: every location as a bare name, no stats,
+     multi-select. Brooks kept not finding the row checkboxes over in the Table tab. */
+  .pick-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-bottom: 14px; }
+  .pick-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .pick-title { font-size: 12px; text-transform: uppercase; letter-spacing: 0.03em; color: var(--text-muted); font-weight: 700; }
+  .pick-count { font-size: 11.5px; color: var(--text-secondary); }
+  .pick-actions { margin-left: auto; display: flex; gap: 6px; }
+  .pick-actions button {
+    font-size: 11.5px; padding: 5px 10px; border-radius: 999px; cursor: pointer;
+    border: 1px solid var(--border); background: var(--page); color: var(--text-secondary);
+  }
+  .pick-actions button:hover { color: var(--text-primary); border-color: var(--text-muted); }
+  .pick-grid { display: flex; flex-wrap: wrap; gap: 7px; }
+  .pick-chip {
+    display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 999px;
+    border: 1px solid var(--border); background: var(--page); color: var(--text-secondary);
+    font-size: 12.5px; cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent;
+  }
+  .pick-chip:hover { border-color: var(--blue-450); color: var(--text-primary); }
+  .pick-chip .tick { opacity: 0; font-size: 11px; }
+  .pick-chip.active { background: var(--blue-450); border-color: var(--blue-450); color: #fff; }
+  .pick-chip.active .tick { opacity: 1; }
+  table.compare-table th, table.compare-table td { min-width: 190px; }
+  table.compare-table th:first-child, table.compare-table td.dim-label { min-width: 140px; }
   table.compare-table { width: 100%; border-collapse: collapse; background: var(--surface); border-radius: 10px; }
   table.compare-table th, table.compare-table td { border: 1px solid var(--grid); padding: 12px; vertical-align: top; font-size: 12.5px; }
   table.compare-table thead th { position: sticky; top: 0; background: var(--surface); text-transform: none; font-size: 14px; cursor: default; }
@@ -865,7 +889,10 @@ const COMPARE_DIMENSIONS = [
   {label:'Program', value:d=>programScore(d.program), higherBetter:true, render:d=>`${programBadge(d.program)}${bulletsHtml(d.programNote)}${sourceLinksFor(d,'program')}`},
   {label:'Photos', render:d=>photoLinksHtml(d)},
 ];
-const MAX_COMPARE = 5;
+// There is deliberately NO cap on how many locations can be compared — Brooks 2026-08-31:
+// "i can select as many as i want". The compare table scrolls horizontally
+// (.compare-table-wrap) and every column carries a min-width, so a wide selection stays
+// readable instead of squeezing all the columns into unreadable slivers.
 
 // which shown locations "win" a dimension (ties all win); dimensions without a `value`
 // fn (Weather, Food — no objective better/worse) are skipped, not force-ranked.
@@ -878,32 +905,46 @@ function bestIdsFor(dim, shown){
   return ids;
 }
 
+// The bare name list at the top of the Compare tab — every location, no stats, click to toggle.
+// Rendered on every renderCompare() pass so it is present in all three states (nothing picked,
+// one picked, comparing), because its whole job is to be the thing you can always find.
+function pickerHtml(){
+  const chips = [...DATA]
+    .sort((a,b) => a.name.localeCompare(b.name))
+    .map(d => `<button class="pick-chip${selectedIds.has(d.id)?' active':''}" data-id="${d.id}" aria-pressed="${selectedIds.has(d.id)}"><span class="tick" aria-hidden="true">✓</span>${d.name}</button>`)
+    .join('');
+  return `
+    <div class="pick-panel">
+      <div class="pick-head">
+        <span class="pick-title">Pick locations to compare</span>
+        <span class="pick-count">${selectedIds.size} of ${DATA.length} selected</span>
+        <span class="pick-actions">
+          <button id="pickAllBtn">Select all</button>
+          <button id="pickNoneBtn">Clear</button>
+        </span>
+      </div>
+      <div class="pick-grid">${chips}</div>
+    </div>`;
+}
+
 function renderCompare(){
   const container = document.getElementById('compareContent');
   const selected = DATA.filter(d => selectedIds.has(d.id));
 
-  if (selected.length === 0) {
-    container.innerHTML = `<div class="compare-empty">Check the box on any row in the Table tab to add a location here. Pick at least 2 to compare side by side (up to ${MAX_COMPARE}).</div>`;
-    return;
-  }
-  if (selected.length === 1) {
-    container.innerHTML = `
-      <div class="compare-picker">
-        <div class="chip-toggle active">${selected[0].name} ${rankBadge(selected[0].id)} <button class="remove-compare" data-id="${selected[0].id}">×</button></div>
-      </div>
-      <div class="compare-empty">Pick at least one more location from the Table tab to start comparing.</div>
-    `;
-    attachRemoveHandlers();
+  if (selected.length < 2) {
+    container.innerHTML = pickerHtml() + `<div class="compare-empty">${
+      selected.length === 0
+        ? 'Pick any two locations above to compare them side by side. Select as many as you like — the table scrolls sideways.'
+        : 'Pick at least one more above to start comparing.'
+    }</div>`;
+    attachPickerHandlers();
     return;
   }
 
-  const shown = selected.slice(0, MAX_COMPARE);
-  const overflow = selected.length - shown.length;
+  const shown = selected;
 
-  container.innerHTML = `
-    <button class="expandToggle clearCompare" id="clearCompareBtn">Clear all selected</button>
-    ${overflow > 0 ? `<div class="compare-empty" style="margin-bottom:12px;">Showing the first ${MAX_COMPARE} selected — remove one to swap in another (${overflow} not shown).</div>` : ''}
-    <div class="compare-empty" style="text-align:left; padding:10px 14px; margin-bottom:12px;">🏆 = best in that row among the locations shown. Weather and Food aren't ranked — they're judgment calls, not a score.</div>
+  container.innerHTML = pickerHtml() + `
+    <div class="compare-empty" style="text-align:left; padding:10px 14px; margin-bottom:12px;">🏆 = best in that row among the locations shown. Weather and Food aren't ranked — they're judgment calls, not a score.${shown.length > 5 ? ` Comparing ${shown.length} — scroll sideways to see them all.` : ''}</div>
     <div class="compare-table-wrap">
       <table class="compare-table">
         <thead>
@@ -928,21 +969,33 @@ function renderCompare(){
       </table>
     </div>
   `;
-  attachRemoveHandlers();
-  document.getElementById('clearCompareBtn').addEventListener('click', () => {
-    selectedIds.clear();
+  attachPickerHandlers();
+}
+
+// One handler set for both the picker chips and the per-column × in the compare table. Both
+// mutate selectedIds, then re-render Compare (to rebuild the table) AND the Table tab (so its
+// row checkboxes stay in sync with what the picker just changed).
+function attachPickerHandlers(){
+  const refresh = () => {
+    document.getElementById('compareBadge').textContent = selectedIds.size;
+    document.getElementById('compareBadge').classList.toggle('hidden-row', selectedIds.size===0);
     renderCompare();
     render();
-  });
-}
-function attachRemoveHandlers(){
-  document.querySelectorAll('.remove-compare').forEach(btn=>{
+  };
+  document.querySelectorAll('.pick-chip').forEach(btn=>{
     btn.addEventListener('click', () => {
-      selectedIds.delete(btn.dataset.id);
-      renderCompare();
-      render();
+      const id = btn.dataset.id;
+      if (selectedIds.has(id)) selectedIds.delete(id); else selectedIds.add(id);
+      refresh();
     });
   });
+  document.querySelectorAll('.remove-compare').forEach(btn=>{
+    btn.addEventListener('click', () => { selectedIds.delete(btn.dataset.id); refresh(); });
+  });
+  const all = document.getElementById('pickAllBtn');
+  if (all) all.addEventListener('click', () => { DATA.forEach(d=>selectedIds.add(d.id)); refresh(); });
+  const none = document.getElementById('pickNoneBtn');
+  if (none) none.addEventListener('click', () => { selectedIds.clear(); refresh(); });
 }
 
 
