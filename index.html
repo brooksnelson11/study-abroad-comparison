@@ -508,7 +508,12 @@ function detailInnerHtml(d){
 // Delete only ever targets the VPS origin's own backend — on the public GitHub Pages copy
 // (or any other host) the button simply doesn't render, so there's nothing to click and no
 // dead fetch() call attempting a request that couldn't reach Brooks's backend anyway.
-const IS_LIVE_SITE = location.hostname === 'hermes-vps.tail2f597b.ts.net';
+// Tailnet reach for this box has multiple valid hostnames (short 'hermes-vps', full
+// 'hermes-vps.tail2f597b.ts.net', various ports) that all proxy to the same page — an exact
+// match against only one of them made the drag/delete/add-order features silently vanish
+// whenever loaded via any of the others. github.io (the public copy) is the only real host to
+// exclude, so match on the shared 'hermes-vps' prefix instead of one exact string.
+const IS_LIVE_SITE = location.hostname === 'hermes-vps' || location.hostname.startsWith('hermes-vps.');
 
 let sortKey = 'match', sortDir = -1;
 let customOrder = [...CUSTOM_ORDER];
@@ -587,7 +592,7 @@ function render(){
   tbody.innerHTML = '';
   filtered.forEach((d, i) => {
     const tr = document.createElement('tr');
-    const dragEnabled = IS_LIVE_SITE && sortKey === 'custom';
+    const dragEnabled = sortKey === 'custom'; // works on any host — see saveCustomOrder() for where it persists to
     tr.className = 'row' + (dragEnabled ? ' draggable-row' : '');
     tr.dataset.id = d.id;
     const open = allExpanded || expandedIds.has(d.id);
@@ -903,14 +908,32 @@ function attachRemoveHandlers(){
 }
 
 
-if (IS_LIVE_SITE) {
+{
+  // available on every host, including the public GitHub Pages copy — see saveCustomOrder()
+  // for how "sticks" differs by host (server-side on the VPS, localStorage everywhere else).
   const opt = document.createElement('option');
   opt.value = 'custom';
   opt.textContent = 'Custom (drag to reorder)';
   document.getElementById('sortKeySelect').appendChild(opt);
 }
 
+const LOCAL_ORDER_KEY = 'studyAbroadCustomOrder';
+if (!IS_LIVE_SITE) {
+  // No backend reachable from here (github.io, or any other non-VPS host) — fall back to
+  // localStorage. It "sticks" for this browser/device only, which is the most any client-only
+  // host can offer; the VPS copy still gets a real shared, cross-device save.
+  try {
+    const saved = JSON.parse(localStorage.getItem(LOCAL_ORDER_KEY) || 'null');
+    if (Array.isArray(saved) && saved.length) customOrder = saved;
+  } catch (e) { /* corrupt localStorage value — ignore, keep the embedded default order */ }
+}
+
 async function saveCustomOrder(){
+  if (!IS_LIVE_SITE) {
+    try { localStorage.setItem(LOCAL_ORDER_KEY, JSON.stringify(customOrder)); }
+    catch (e) { console.error('localStorage save failed:', e.message); }
+    return;
+  }
   try {
     const res = await fetch('/api/study_abroad_save_order', {
       method: 'POST', headers: {'Content-Type': 'application/json'},
