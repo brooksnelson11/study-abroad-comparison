@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Study Abroad Comparison — Brooks</title>
+<style>
+  :root {
+    color-scheme: light;
+    --page: #f9f9f7;
+    --surface: #fcfcfb;
+    --surface-2: #f0efec;
+    --text-primary: #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted: #898781;
+    --grid: #e1e0d9;
+    --baseline: #c3c2b7;
+    --border: rgba(11,11,11,0.10);
+    --blue-400: #3987e5;
+    --blue-450: #2a78d6;
+    --blue-250: #86b6ef;
+    --blue-150: #b7d3f6;
+    --good: #0ca30c;
+    --warning: #fab219;
+    --critical: #d03b3b;
+    --row-hover: #f0efec;
+  }
+  [data-theme="dark"] {
+    color-scheme: dark;
+    --page: #0d0d0d;
+    --surface: #1a1a19;
+    --surface-2: #2c2c2a;
+    --text-primary: #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted: #898781;
+    --grid: #2c2c2a;
+    --baseline: #383835;
+    --border: rgba(255,255,255,0.10);
+    --blue-400: #3987e5;
+    --blue-450: #2a78d6;
+    --blue-250: #5598e7;
+    --blue-150: #3987e5;
+    --good: #0ca30c;
+    --warning: #fab219;
+    --critical: #e66767;
+    --row-hover: #2c2c2a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--page);
+    color: var(--text-primary);
+    font-variant-numeric: tabular-nums;
+  }
+  .wrap { max-width: 1500px; margin: 0 auto; padding: 24px 20px 80px; }
+  header.top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; margin-bottom: 8px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .subtitle { color: var(--text-secondary); font-size: 13.5px; max-width: 760px; line-height: 1.5; }
+  button.themeToggle, button.expandToggle {
+    background: var(--surface); color: var(--text-primary); border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 14px; font-size: 13px; cursor: pointer; white-space: nowrap;
+  }
+  button.themeToggle:hover, button.expandToggle:hover { background: var(--row-hover); }
+  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .tabs { display: flex; gap: 6px; margin: 4px 0 16px; border-bottom: 1px solid var(--border); }
+  .tab-btn {
+    background: none; border: none; padding: 10px 16px; font-size: 13.5px; font-weight: 600;
+    color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px;
+  }
+  .tab-btn.active { color: var(--blue-450); border-bottom-color: var(--blue-450); }
+  .tab-btn:hover { color: var(--text-primary); }
+  .compare-badge {
+    display: inline-flex; align-items: center; justify-content: center; min-width: 16px; height: 16px;
+    background: var(--blue-450); color: #fff; border-radius: 999px; font-size: 10px; padding: 0 4px; margin-left: 4px;
+  }
+  .view.hidden-row { display: none !important; }
+
+  .methodology {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px 16px; margin: 16px 0; font-size: 12.5px; color: var(--text-secondary); line-height: 1.6;
+  }
+  .methodology b { color: var(--text-primary); }
+  .methodology code { background: var(--surface-2); padding: 1px 5px; border-radius: 4px; font-size: 11.5px; }
+
+  .col-toggles { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 12px; align-items: center; }
+  .col-toggles .label { font-size: 11px; color: var(--text-muted); margin-right: 2px; }
+  .col-toggles .chip-toggle { font-size: 11.5px; padding: 5px 10px; opacity: 0.5; }
+  .col-toggles .chip-toggle.active { opacity: 1; }
+
+  .controls {
+    display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+    margin: 0 0 16px; padding: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+  }
+  .controls input[type="text"] {
+    flex: 1 1 220px; min-width: 180px; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--page); color: var(--text-primary); font-size: 13.5px;
+  }
+  .controls select {
+    padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--page); color: var(--text-primary); font-size: 13px;
+  }
+  .controls .hint { font-size: 11.5px; color: var(--text-muted); flex-basis: 100%; }
+  .chip-toggle {
+    display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 999px;
+    border: 1px solid var(--border); background: var(--page); font-size: 12.5px; cursor: pointer; color: var(--text-secondary);
+  }
+  .chip-toggle.active { background: var(--blue-450); color: white; border-color: var(--blue-450); }
+
+  table { width: 100%; border-collapse: collapse; background: var(--surface); border-radius: 10px; overflow: hidden; }
+  thead th {
+    text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.03em;
+    color: var(--text-muted); padding: 10px 8px; border-bottom: 2px solid var(--baseline);
+    cursor: pointer; user-select: none; white-space: nowrap; position: sticky; top: 0; background: var(--surface); z-index: 2;
+  }
+  thead th.nosort { cursor: default; }
+  thead th:hover { color: var(--text-primary); }
+  thead th .arrow { font-size: 10px; margin-left: 3px; opacity: 0.6; }
+  tbody tr.row { border-bottom: 1px solid var(--grid); cursor: pointer; }
+  tbody tr.row:hover { background: var(--row-hover); }
+  tbody td { padding: 9px 8px; font-size: 12.5px; vertical-align: top; }
+  .locname { font-weight: 600; display: block; }
+  .hemi { font-size: 10.5px; color: var(--text-muted); font-weight: 400; }
+  .overall-rank { font-size: 10px; color: var(--text-muted); font-weight: 600; display: inline-block; margin-left: 6px; background: var(--surface-2); padding: 1px 6px; border-radius: 999px; }
+  a.badge-link { text-decoration: none; cursor: pointer; border-bottom: 1px dashed var(--border); }
+  a.badge-link:hover { opacity: 0.8; }
+  .rank { color: var(--text-muted); font-size: 12px; width: 24px; }
+  .chev { display: inline-block; width: 12px; color: var(--text-muted); font-size: 10px; }
+  .chk-cell { width: 20px; text-align: center; }
+  .chk-cell input { cursor: pointer; }
+
+  .bar-track { width: 70px; height: 7px; background: var(--surface-2); border-radius: 4px; overflow: hidden; display: inline-block; vertical-align: middle; }
+  .bar-fill { display: block; height: 100%; background: var(--blue-450); border-radius: 4px; }
+  .bar-label { font-size: 11.5px; margin-left: 5px; color: var(--text-secondary); }
+  .no-surf { font-size: 11px; color: var(--text-muted); font-style: italic; }
+
+  .stars { color: var(--text-muted); font-size: 12px; letter-spacing: 1px; display: block; }
+  .stars .on { color: var(--blue-450); }
+  .short-phrase { font-size: 11px; color: var(--text-secondary); display: block; margin-top: 2px; max-width: 150px; line-height: 1.35; }
+
+  .badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; padding: 3px 8px; border-radius: 999px; font-weight: 600; white-space: nowrap; }
+  .badge.good { background: rgba(12,163,12,0.14); color: var(--good); }
+  [data-theme="dark"] .badge.good { color: #4fd44f; }
+  .badge.watch { background: rgba(250,178,25,0.18); color: #8a5c00; }
+  [data-theme="dark"] .badge.watch { color: var(--warning); }
+  .badge.flag { background: rgba(208,59,59,0.15); color: var(--critical); }
+  .badge.confirmed { background: var(--surface-2); color: var(--text-secondary); }
+  .badge.partial { background: var(--surface-2); color: var(--text-secondary); }
+  .badge.thin { background: var(--surface-2); color: var(--text-muted); }
+  .badge.excellent { background: rgba(12,163,12,0.14); color: var(--good); }
+  [data-theme="dark"] .badge.excellent { color: #4fd44f; }
+  .badge.limited { background: rgba(250,178,25,0.18); color: #8a5c00; }
+  [data-theme="dark"] .badge.limited { color: var(--warning); }
+  .badge.carneeded { background: rgba(208,59,59,0.12); color: #8a3a00; }
+  [data-theme="dark"] .badge.carneeded { color: #e6a06a; }
+
+  .cost { font-weight: 600; }
+  .cost small { font-weight: 400; color: var(--text-muted); font-size: 10.5px; }
+
+  .food-short { font-size: 12px; color: var(--text-secondary); max-width: 170px; display: block; line-height: 1.4; }
+
+  .detail-row td { padding: 0; border-bottom: 1px solid var(--grid); }
+  .detail-inner { padding: 14px 20px 20px 34px; background: var(--surface-2); display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; font-size: 12.8px; line-height: 1.55; }
+  .detail-col h4 { margin: 0 0 6px; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.03em; color: var(--text-muted); }
+  .detail-col p, .detail-col ul { margin: 0 0 6px; color: var(--text-secondary); }
+  .detail-col ul { padding-left: 16px; }
+  .detail-col li { margin-bottom: 4px; }
+  .detail-col li:last-child { margin-bottom: 0; }
+  .detail-col a { color: var(--blue-450); text-decoration: none; }
+  .detail-col a:hover { text-decoration: underline; }
+  .good-txt { color: var(--good); }
+  [data-theme="dark"] .good-txt { color: #4fd44f; }
+  .bad-txt { color: var(--critical); }
+  .src-link { font-size: 10.5px; white-space: nowrap; margin-right: 6px; opacity: 0.85; display: inline-block; margin-top: 2px; }
+  .more-sources { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+  .more-sources a { color: var(--text-muted); }
+
+  .hidden-row { display: none !important; }
+
+  .legend-row { display: flex; gap: 18px; flex-wrap: wrap; font-size: 11.5px; color: var(--text-muted); margin: 10px 2px 0; }
+  .legend-row span { display: inline-flex; align-items: center; gap: 5px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .dot.good { background: var(--good); }
+  .dot.watch { background: var(--warning); }
+  .dot.flag { background: var(--critical); }
+
+  footer.note { margin-top: 22px; font-size: 11.5px; color: var(--text-muted); line-height: 1.6; }
+  @media (max-width: 1100px) {
+    thead th[data-key="surf"], tbody td[data-col="surf"] { display: none; }
+    thead th[data-key="weather"], tbody td[data-col="weather"] { display: none; }
+  }
+
+  /* Compare tab */
+  .compare-empty { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 24px; text-align: center; color: var(--text-secondary); font-size: 13.5px; }
+  .compare-picker { display: flex; gap: 8px; flex-wrap: wrap; margin: 14px 0; }
+  .compare-picker .chip-toggle { font-size: 12px; }
+  .compare-table-wrap { overflow-x: auto; }
+  table.compare-table { width: 100%; border-collapse: collapse; background: var(--surface); border-radius: 10px; }
+  table.compare-table th, table.compare-table td { border: 1px solid var(--grid); padding: 12px; vertical-align: top; font-size: 12.5px; }
+  table.compare-table thead th { position: sticky; top: 0; background: var(--surface); text-transform: none; font-size: 14px; cursor: default; }
+  table.compare-table .dim-label { font-weight: 700; background: var(--surface-2); white-space: nowrap; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.03em; color: var(--text-muted); }
+  table.compare-table td ul { margin: 4px 0; padding-left: 16px; }
+  table.compare-table td li { margin-bottom: 3px; }
+  .remove-compare { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 14px; margin-left: 8px; }
+  .remove-compare:hover { color: var(--critical); }
+  .clearCompare { margin-bottom: 14px; }
+  table.compare-table td.best-cell { background: rgba(12,163,12,0.10); box-shadow: inset 0 0 0 2px var(--good); border-radius: 6px; }
+  .best-tag { display: inline-block; font-size: 10px; font-weight: 700; color: var(--good); background: rgba(12,163,12,0.16); padding: 1px 7px; border-radius: 999px; margin-bottom: 5px; }
+  [data-theme="dark"] .best-tag { color: #4fd44f; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>Study Abroad Comparison — Spring Semester (Jan–May)</h1>
+      <div class="subtitle">Everything researched so far, on one sheet. Descriptions are bulleted with links to sources. Rows start collapsed — expand one, or use the toggle to open/close all at once. Shared for Brooks + his surfing friend — general-elective-only criteria, no business/finance credit path required.</div>
+    </div>
+    <div class="btn-row">
+      <button class="expandToggle" id="expandToggle">▸ Expand all rows</button>
+      <button class="themeToggle" id="themeToggle">🌓 Toggle dark mode</button>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="table">📋 Table</button>
+    <button class="tab-btn" data-tab="compare">⚖️ Compare<span class="compare-badge hidden-row" id="compareBadge">0</span></button>
+  </div>
+
+  <div class="view" id="view-table">
+    <div class="methodology">
+      <b>Match Score</b> = equal-weighted average of Fishing Fit, Nature (×20), College Scene (×20), Cost (inverted, cheaper = higher), Safety (Good=100 / Watch=55 / Flag=15). <b>Surf Fit and Public Transit are separate columns, NOT folded into Match Score</b> — every column is independently sortable, click any header to re-rank by just that one thing. <b>Fishing Fit</b> and <b>Surf Fit</b> = % of your Jan–May window inside the real, sourced good season for that activity — scored separately since they often don't line up. Nature and College Scene are 1–5 judgment calls based on the research. Check the box on any row to add it to the <b>Compare</b> tab above.
+    </div>
+
+    <div class="col-toggles">
+      <span class="label">Show columns:</span>
+    </div>
+
+    <div class="controls">
+      <span class="label" style="font-size:11.5px;color:var(--text-muted);">Rank by:</span>
+      <select id="sortKeySelect">
+        <option value="match">Match Score</option>
+        <option value="fit">Fishing Fit</option>
+        <option value="surf">Surf Fit</option>
+        <option value="nature">Nature</option>
+        <option value="college">College Scene</option>
+        <option value="cost">Cost / Semester</option>
+        <option value="transit">Transit</option>
+        <option value="safety">Safety</option>
+        <option value="program">Program</option>
+        <option value="name">Name (A–Z)</option>
+      </select>
+      <button class="chip-toggle" id="sortDirBtn">▼ Best first</button>
+      <input type="text" id="search" placeholder="Search locations, e.g. &quot;surf&quot; or &quot;cheap&quot; or &quot;Spain&quot;...">
+      <select id="hemiFilter">
+        <option value="all">All hemispheres</option>
+        <option value="N">Northern only</option>
+        <option value="S">Southern only</option>
+      </select>
+      <div class="chip-toggle" id="confirmedOnly" data-active="false">✓ Confirmed program only</div>
+      <div class="chip-toggle" id="safeOnly" data-active="false">🛡 Hide safety flags</div>
+      <div class="chip-toggle" id="surfOnly" data-active="false">🏄 Real surf option only</div>
+      <div class="hint">18 locations researched across your Jan 19 – May 15 window. Type to filter, click headers to sort, click a row to expand/collapse just that one.</div>
+    </div>
+
+    <div style="overflow-x:auto;">
+    <table id="tbl">
+      <thead>
+        <tr id="headRow"></tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    </div>
+
+    <div class="legend-row">
+      <span><span class="dot good"></span> Safety: standard precautions, nothing active</span>
+      <span><span class="dot watch"></span> Safety: recent advisory bump / routine unrest, worth a mention</span>
+      <span><span class="dot flag"></span> Safety: real, current, specific concern — worth a parent conversation</span>
+    </div>
+  </div>
+
+  <div class="view hidden-row" id="view-compare">
+    <div id="compareContent"></div>
+  </div>
+
+  <footer class="note">
+    Built 2026-08-30 from the full research thread (fishing-season dates, weather, food scene, cost of living, safety/political notes, surf spots + season, public transit). Gerald is running an independent version of this same research separately — this page is Claude Code's take only, meant to sit alongside his.
+  </footer>
+</div>
+
+<script>
+const DATA = [
+  { id:'dunedin', name:'Dunedin, NZ (Otago)', hemi:'S', fit:100, fitNote:'Brown trout Oct 1–Apr 30, rainbow Nov 1–May 31 — 100% of your window is open season. Sits next to the South Island’s best rivers (Mataura, Oreti, Waiau).',
+    surf:55, surfNote:'St Clair Beach — a real, well-known local break (NZ’s most consistent surf spot), 10 minutes from campus. Best season is autumn, especially May; Jan–Feb (NZ summer) is the weaker window, so the back half of your stay is best for waves.',
+    nature:5, natureShort:'Best trout rivers on Earth nearby', natureNote:'Arguably the single best trout-fishing address on Earth, not just "near" fishing.',
+    college:5, collegeShort:'Legendary student-lifestyle college town', collegeNote:'Legendary "student lifestyle" reputation — classic tight college town, 100+ exchange partners.',
+    weatherShort:'53–60°F, cool & windy', weatherDetail:'Jan (hottest) ~58°F avg, cooling steadily to ~50°F by May. Windy and partly cloudy most of the window.',
+    foodShort:'Cheap student-town food, historically weak but improving', foodGood:'Cheap, real student-town food culture — fish & chips, many spots run by culinary-school grads.', foodBad:'Historically had a "bad reputation" for food; genuinely improved over the last ~7 years but still budget-first, not a culinary destination.',
+    transitTier:'good', transitNote:'Orbus buses (Bee Card, 15–30 min frequency) cover the city; most students live within walking/cycling distance (~2km) of campus, so a car isn’t needed for daily life.',
+    costMin:7000, costMax:7500, safety:'good', safetyNote:'Same national picture as Wellington — Level 1, very low crime, only earthquake/flood awareness.',
+    program:'confirmed', programNote:'Real, confirmed Study Abroad program at University of Otago. Semester One starts Feb, slightly after a Jan arrival.',
+    sources:[['University of Otago — Study Abroad','https://www.otago.ac.nz/international/future-students/student-exchange-and-study-abroad'],['NZ trout season dates','https://www.fishing.net.nz/fishing-advice/general-articles/october-1st-trout-fishing-season-begins/'],['St Clair surf guide','https://www.surf-forecast.com/breaks/St-Clair']] },
+
+  { id:'zagreb', name:'Zagreb / Split, Croatia', hemi:'N', fit:90, fitNote:'Gacka River (trophy browns) open Mar 1–Oct 31 — miss only Jan–Feb.',
+    surf:0, surfNote:'Essentially none, and it’s not worth dressing up — the Adriatic near Split is sheltered by Italy and typically glass-calm. Locals do windsurfing/kitesurfing at Brač (Zlatni Rat), not real surf breaks. Zagreb is fully inland.',
+    nature:4.5, natureShort:'Trophy browns + real beach-club coast', natureNote:'Browns grow 5–7x normal, fish to 11 lbs; Split/Dubrovnik add a real beach-club coastline.',
+    college:4, collegeShort:'Real business school, unique beach-club scene', collegeNote:'Real English-taught business school (ZSEM) if needed; genuinely unique beach-club social scene, not typical study-abroad.',
+    weatherShort:'Zagreb cold, Split mild', weatherDetail:'Zagreb: 32–73°F, can snow in winter. Split: 52–70°F, Mediterranean, sea too cold to swim through Feb.',
+    foodShort:'Booming modern food scenes, lightly verified', foodGood:'Both cities have booming modern food scenes on top of traditional big-lunch culture.', foodBad:'Thin negative-review coverage found — treat the good reputation as under-verified, not disproven.',
+    transitTier:'good', transitNote:'Zagreb has Croatia’s only tram network (15 day + 4 night lines) plus buses (~€13/month student pass); Split has ~20 bus lines at a flat €2/ride. Neither city requires a car.',
+    costMin:4500, costMax:7000, safety:'good', safetyNote:'Level 1, low crime; Croatia declared officially landmine-free in 2026 (old 1990s-war concern now resolved).',
+    program:'partial', programNote:'Real accredited university, but zero UTK precedent yet — "someone would have to go first."',
+    sources:[['Gacka River fly fishing','https://fishingbooker.com'],['ZSEM overview','https://www.zsem.hr'],['Zagreb transit guide','https://www.expatincroatia.com/zet-zagrebs-public-transportation-system/']] },
+
+  { id:'tasmania', name:'Hobart, Tasmania', hemi:'S', fit:85, fitNote:'Highland lake trout runs Aug–end of April — covers virtually the whole window.',
+    surf:65, surfNote:'Clifton Beach (~30 min from Hobart) is a real, solid local break fed by Southern Ocean swell. Autumn — especially March — and winter are the most consistent period, so the back half of your stay (Mar–May) is prime time for waves.',
+    nature:5, natureShort:'World-class wild trout, whole-island feel', natureNote:'World-class wild brown trout in alpine lakes, whole-island "campus."',
+    college:4, collegeShort:'Confirmed exchange, tight-knit small town', collegeNote:'Confirmed real exchange at University of Tasmania, small tight-knit town (~230k island-wide feel).',
+    weatherShort:'54–73°F, warmest Jan–Mar', weatherDetail:'Jan–Mar warmest/driest (68–73°F highs), cooling into autumn by May. Bushfire risk peaks Jan–Feb (dry lightning) — a real seasonal note, not alarm-worthy.',
+    foodShort:'Salamanca Market & oysters; smaller scene than Sydney/Melbourne', foodGood:'Salamanca Market, Bruny Island oysters, curried scallop pie, artisan cheese/whiskey.', foodBad:'Smaller dining scene than Sydney/Melbourne — a real tradeoff (intimate, produce-focused) more than a complaint.',
+    transitTier:'good', transitNote:'Metro Tasmania buses — and Tasmania has waived public transit fares statewide through June 2027, with UTAS covering student costs on top. A car helps for reaching surf beaches but isn’t needed for campus life.',
+    costMin:5300, costMax:8300, safety:'good', safetyNote:'No political concerns. Bushfire season Jan–Feb worth a one-line mention to a parent.',
+    program:'confirmed', programNote:'Confirmed real exchange program at University of Tasmania.',
+    sources:[['UTAS Study Abroad','https://www.utas.edu.au/study/learning-abroad/inbound'],['Go Overseas — Tasmania','https://www.gooverseas.com/study-abroad/australia/program/229990'],['Clifton Beach surf guide','https://www.surf-forecast.com/breaks/Clifton-Beach']] },
+
+  { id:'galway', name:'Galway, Ireland', hemi:'N', fit:65, fitNote:'Trout mid-Feb, salmon Jan–Sept — miss only the first ~6 weeks.',
+    surf:60, surfNote:'Galway city itself only has a minor local beach — the real draws are Lahinch and Bundoran ("Ireland’s surf capital"), both 1+ hour away, so it’s a car/day-trip situation. Spring (Mar–May) is actually a solid, learner-friendly window; Jan–Feb can be huge/stormy (advanced only).',
+    nature:4, natureShort:'Cliffs of Moher & Connemara nearby', natureNote:'Cliffs of Moher and Connemara an easy day trip.',
+    college:5, collegeShort:'Friendliest city in Ireland', collegeNote:'Reviewers consistently call it the friendliest city in Ireland — real nightlife/music, easy to feel at home.',
+    weatherShort:'38–61°F, mild & rainy', weatherDetail:'Oceanic climate — mild but rainy winters (Jan ~43°F), gradually clearing and warming toward May (~54°F).',
+    foodShort:'Real culinary revolution, but chains are creeping in', foodGood:'Genuine "culinary revolution" underway, several nationally-ranked restaurants.', foodBad:'Local food press worry chains (bubble tea, kebab shops) are crowding out independents as the scene grows; some venues cited for slow service/quality slipping.',
+    transitTier:'limited', transitNote:'Two bus operators cover downtown/university with student discounts and the core is walkable, but there’s no rail/tram — reaching surf towns or venturing outside the center leans on a car or infrequent regional buses.',
+    costMin:5200, costMax:6000, safety:'good', safetyNote:'Level 1, most crime categories fell further in 2026, stable politics.',
+    program:'confirmed', programNote:'Fully confirmed and already listed directly on UTK’s own portal (CEA CAPA) — lowest-friction option to apply to.',
+    sources:[['University of Galway cost of living','https://www.universityofgalway.ie'],['Galway food scene','https://connachttribune.ie/galways-food-scene-must-be-protected/'],['Galway surf beaches','https://www.galwaytourism.ie/best-surfing-beaches-near-galway/']] },
+
+  { id:'vancouver', name:'Vancouver, Canada (UBC)', hemi:'N', fit:90, fitNote:'Winter steelhead run Dec–Apr, peaking Jan–March — arrives right at peak season.',
+    surf:70, surfNote:'No local surf in Vancouver proper — the real destination is Tofino on Vancouver Island, 5–6 hours away (drive + ferry), a legitimately world-class surf town. Timing is favorable: winter (esp. January) is most consistent, spring often brings good swells too — but it’s a weekend-trip situation, not local.',
+    nature:4.5, natureShort:'Mountains + ocean on campus', natureNote:'Mountains + ocean on campus; Whistler skiing 1.5 hours away.',
+    college:4.5, collegeShort:'Huge international student body', collegeNote:'Huge international student body, real city nightlife — most people-your-age-around of anywhere on this list.',
+    weatherShort:'35–58°F, rainy → spring', weatherDetail:'Grey and rainy through Feb (35–47°F), cherry blossoms late Feb–March, noticeably drier/greener by May (~58°F).',
+    foodShort:'8 Michelin stars — just genuinely expensive', foodGood:'Top-tier: 8 Michelin-starred restaurants in the 2026 guide, strong Pacific Rim/Asian-fusion scene.', foodBad:'The real complaint is cost, not quality — eating out is genuinely expensive across the board.',
+    transitTier:'excellent', transitNote:'UBC students get U-Pass BC for unlimited bus/SkyTrain/SeaBus across Metro Vancouver — no car needed for city or campus life.',
+    costMin:6600, costMax:10300, safety:'good', safetyNote:'No instability. Downtown Eastside has a real, contained drug/crime problem — far from UBC’s Point Grey campus. City rated 4th-safest globally for solo travelers.',
+    program:'confirmed', programNote:'Direct confirmed exchange through Sauder School of Business; academic calendar (Jan–Apr) matches almost exactly.',
+    sources:[['UBC exchange','https://you.ubc.ca/financial-planning/cost/'],['Vancouver steelhead season','https://troutandsteelhead.net/british-columbia-steelhead-fishing/'],['Tofino surf guide','https://www.pacificsands.com/blog/tofino-surfing-guide-seasons-and-beaches/']] },
+
+  { id:'bariloche', name:'Bariloche, Argentina', hemi:'S', fit:85, fitNote:'Trout season Nov 9–Apr 20/30 depending on water — covers ~90% of your window.',
+    surf:0, surfNote:'No ocean surf — Bariloche sits on Lake Nahuel Huapi in the Andes, nowhere near a coast. Locals do lake windsurfing/kitesurfing (constant wind, safe shores), but that’s not surfing. Zero real surf case here.',
+    nature:5, natureShort:'Literal postcard Patagonia', natureNote:'Literal postcard Patagonia — Andes mountains on Lake Nahuel Huapi, not "Patagonia-adjacent."',
+    college:3, collegeShort:'Thin — mostly BA-based excursions', collegeNote:'Thin — mostly Buenos Aires-based programs use Bariloche as an excursion stop, not a full semester base.',
+    weatherShort:'45–72°F, summer→autumn', weatherDetail:'Warmest Jan–Feb (~72°F highs), cooling to ~50°F by May as autumn sets in.',
+    foodShort:'Chocolate & craft-beer capital; lakefront is overpriced', foodGood:'Argentina’s chocolate capital, 100-year craft-beer tradition, lamb/trout, Swiss-German-Hungarian fusion.', foodBad:'Reviewers call the lakefront overpriced/touristy — one pizza spot charged 2x a nearby place for worse quality.',
+    transitTier:'good', transitNote:'Mi Bus (SUBE card) covers downtown and reaches Cerro Catedral. Fine if housing is central; a car helps for freely exploring the wider Patagonia region.',
+    costMin:6000, costMax:7500, safety:'good', safetyNote:'Very low crime, closer to a European mountain town than typical Latin-America risk profile. Real risk is trail/weather, not crime.',
+    program:'thin', programNote:'No confirmed dedicated business-or-gen-ed semester program based IN Bariloche itself yet — needs a real PAO conversation.',
+    sources:[['Patagonia trout season dates','https://www.patagoniariverguides.com/about-us/patagonia-seasons/'],['Bariloche study abroad','https://www.studyabroad101.com/cities/argentina/bariloche'],['Bariloche transport guide','https://barilocheturismo.gob.ar/en/public-transportation']] },
+
+  { id:'wellington', name:'Wellington, NZ', hemi:'S', fit:95, fitNote:'Brown trout Oct 1–Apr 30 (nearly the whole window), rainbow through May 31.',
+    surf:30, surfNote:'Lyall Bay — a real, locally famous beginner break right by the airport. Best season is winter (June), when south swells are strongest; summer is often flat, so Jan–Feb is weak and only March–May starts to pick up.',
+    nature:5, natureShort:'Fjords, mountains, coastline', natureNote:'Fjords, mountains, coastline — elite New Zealand nature access.',
+    college:4.5, collegeShort:'Confirmed program, Tramping Club social scene', collegeNote:'Confirmed UTK-listed program; Tramping Club (hiking/climbing most weekends) is the easiest way to meet people.',
+    weatherShort:'59–66°F, mild & windy', weatherDetail:'Consistently mild (59–66°F) through the whole window — Wellington’s defining trait is being windy year-round, not seasonal swings.',
+    foodShort:'Strong coffee & dining scene, no complaints found', foodGood:'Strong coffee culture, 2 Michelin-recognized spots (Logan Brown, Ortega Fish Shack).', foodBad:'Reputation is strong across the board — no substantive negative reviews surfaced in this pass.',
+    transitTier:'good', transitNote:'Extensive network on paper — Metlink runs 5 rail lines, 100+ bus routes, a ferry, and the cable car, no car needed for coverage. But it has a real, well-documented reliability history: a botched 2018 bus network overhaul ("scathing review" at the time), a chronic driver shortage that peaked at 120 drivers short (20% of the workforce), and periodic cancellation waves with public apologies from the operator. The good news: Metlink’s own 2026 performance reports show real improvement — 99.5–99.7% of scheduled bus services actually delivered in Jan/Feb 2026, and complaints down year-over-year most months (though Jan 2026 complaints spiked 19.8% after a rough train-replacement-bus rollout). Read as "extensive and improving, not flawless," not "excellent."',
+    costMin:7000, costMax:12000, safety:'good', safetyNote:'Level 1, among the world’s safest countries. Only real caveat is a seismic zone / natural-hazard one, not political.',
+    program:'confirmed', programNote:'Confirmed UTK-listed program (ISA) with real coursework.',
+    sources:[['Victoria University of Wellington exchange','https://www.wgtn.ac.nz'],['NZ safety advisory','https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/new-zealand-travel-advisory.html'],['Lyall Bay surf guide','https://www.surf-forecast.com/breaks/Lyall-Bay'],['Metlink Feb 2026 performance report','https://www.metlink.org.nz/assets/Policies-and-reports/Performance-of-our-network/Performance-Reports/February-2026-Monthly-Report.pdf'],['RNZ — Metlink "shambles" commuter complaints','https://www.rnz.co.nz/news/alert-nat/583390/shambles-metlink-troubles-makes-return-to-work-even-more-sour-for-wellington-commuters']] },
+
+  { id:'ljubljana', name:'Ljubljana, Slovenia', hemi:'N', fit:30, fitNote:'Soča River opens April 1 — only the last ~4–8 weeks of your stay are fishable.',
+    surf:0, surfNote:'None. Slovenia’s tiny coastline near Piran is ~1.5 hours away and isn’t a surf destination — flat, sheltered Adriatic. Not worth stretching for.',
+    nature:5, natureShort:'Arguably Europe’s best trout water', natureNote:'Arguably Europe’s single best trout water — marble trout in gin-clear water.',
+    college:3.5, collegeShort:'Smaller, more personal program', collegeNote:'Smaller, more personal alternative to mega-city programs — real but quieter.',
+    weatherShort:'28–68°F, cold → warm', weatherDetail:'Cold winters (down to -2.5°F lows in Jan), steady rain, warming nicely to ~68°F by May.',
+    foodShort:'Underrated food city; traditional dishes called "unsophisticated"', foodGood:'Called "Europe’s most underrated food city" — a genuine neo-bistro wave of young chefs.', foodBad:'Traditional Slovenian cuisine on its own has historically been criticized as "earthy but unsophisticated" — the neo-bistro scene is a recent fix, not the long-standing baseline.',
+    transitTier:'excellent', transitNote:'LPP city buses cover the metro area, a subsidized ~€20/month student pass, plus 300km of bike lanes — a car would be dead weight.',
+    costMin:2750, costMax:5000, safety:'good', safetyNote:'Level 1 — the cleanest safety profile of every location researched. Only mild note is occasional protests near Parliament.',
+    program:'partial', programNote:'No UTK precedent yet, but general-elective-only removes the main barrier — worth a fresh look.',
+    sources:[['Soča fishing season','https://www.patagoniariverguides.com'],['Ljubljana neo-bistro scene','https://www.lonelyplanet.com/articles/eating-local-with-style-the-rise-of-the-neo-bistro-in-ljubljana'],['Ljubljana transit','https://en.wikipedia.org/wiki/Ljubljana_Passenger_Transport']] },
+
+  { id:'pamplona', name:'Pamplona / Pyrenees, Spain', hemi:'N', fit:90, fitNote:'Aragón/Navarra season runs Mar 1–Oct 31 — one of the best-timed windows of any Spanish option, miss only Jan–Feb.',
+    surf:75, surfNote:'The Basque coast (Zurriola, Mundaka, Sopelana) is ~1 hour away — a real, internationally-known surf region, not a stretch. Prime window is Sept–April, so Jan–Apr of your semester lines up well; May is the weak tail as swells shrink into summer mush.',
+    nature:4.5, natureShort:'Real Pyrenees, Hemingway’s river', natureNote:'Real Pyrenees scenery, including the Irati river Hemingway fished and wrote about.',
+    college:3, collegeShort:'Quieter social reputation', collegeNote:'Quieter social reputation than Granada or Galway.',
+    weatherShort:'42–68°F, cold inland', weatherDetail:'Colder/wetter winters than coastal Basque cities since Pamplona sits inland and higher — April is the wettest month of the window.',
+    foodShort:'Tapas + 2-Michelin-star Rodero; thin critical coverage', foodGood:'Tapas/pintxos around Plaza del Castillo, plus 2-Michelin-star Restaurante Rodero.', foodBad:'Thin critical coverage found — treat the good reputation as less independently verified than Bilbao’s or Galway’s.',
+    transitTier:'good', transitNote:'TUC/Villavesa city buses (21 day + 9 night lines) plus regional buses; the historic center is very walkable, no car needed daily.',
+    costMin:3500, costMax:6500, safety:'watch', safetyNote:'Spain raised to Level 2 nationally (Aug 2026) — not Pamplona-specific. The one real local risk (bull-goring incidents) is July, outside this semester.',
+    program:'partial', programNote:'No confirmed provider or UTK path has turned up yet — "worth investigating," general electives make this easier now.',
+    sources:[['Fly fishing the Spanish Pyrenees','https://www.midcurrent.com'],['Spain travel advisory','https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/spain-travel-advisory.html'],['Basque coast surf guide','https://www.manawa.com/en/articles/top-10-spots-on-basque-country']] },
+
+  { id:'grenoble', name:'Grenoble, France', hemi:'N', fit:40, fitNote:'Opens mid-March but Alpine snowmelt keeps rivers high/off-color into early summer — realistically only ~6–7 clean weeks.',
+    surf:0, surfNote:'No real surfing, plainly — Grenoble is landlocked in the Alps, nearest coast is 400+ km away and the Mediterranean itself is a weak swell environment. This is a ski/mountain city, not a surf option at any time of year.',
+    nature:5, natureShort:'Real Alps, Europe’s green capital', natureNote:'Real Alps on your doorstep — Grenoble was named Europe’s "green capital" in 2022.',
+    college:4, collegeShort:'Genuinely international social scene', collegeNote:'Genuinely international social scene (classmates from Brazil, Thailand, Korea, Denmark), organized wine-tasting/cooking classes.',
+    weatherShort:'32–61°F, cold & damp', weatherDetail:'Cold, damp, mountain-shadowed most of the window (32–45°F through winter); warms to ~61°F by May, which is also the wettest month.',
+    foodShort:'Alpine fondue/raclette, but quality is uneven', foodGood:'Alpine/Savoyard focus — fondue, raclette, local cheese, Isère wines.', foodBad:'Uneven quality — at least one restaurant got a scathing review calling it "the worst restaurant we’ve visited anywhere."',
+    transitTier:'excellent', transitNote:'5 tram lines + 47 bus lines, one nicknamed "the student tramway" runs straight to campus, 5am–1am service, strong walk/bike infrastructure too.',
+    costMin:3800, costMax:5500, safety:'watch', safetyNote:'France sits at Level 2 for routine strikes/demonstrations — Grenoble itself isn’t a hotspot compared to Paris/Lyon/Marseille.',
+    program:'partial', programNote:'Credit path likely direct via the same CEA provider UTK already uses for Galway.',
+    sources:[['Grenoble climate','https://www.climatestotravel.com/climate/france/grenoble'],['France travel advisory','https://travel.state.gov/en/international-travel/travel-advisories/france.html'],['Grenoble tram/transit','https://en.wikipedia.org/wiki/Grenoble_tramway']] },
+
+  { id:'edinburgh', name:'Edinburgh, Scotland', hemi:'N', fit:70, fitNote:'Tay opens Jan 15, Spey opens Feb 11 — legally fishing from week 2–3 of the semester.',
+    surf:45, surfNote:'Belhaven Bay (30–40 min, beginner-friendly) and Pease Bay (~90 min, more advanced) are real, established Scottish spots. Scottish surf overall peaks autumn/winter for the biggest swell, but Belhaven is workable year-round — solid access, just not peak conditions during your window.',
+    nature:4, natureShort:'Highlands access, prized salmon runs', natureNote:'Real Highlands access, genuinely prized spring salmon runs, not a consolation prize.',
+    college:4.5, collegeShort:'"Best decision of my life" reviews', collegeNote:'Former exchange students describe it as "the best decision of my life" — free intercity buses make weekend trips easy.',
+    weatherShort:'34–59°F, cold → longer days', weatherDetail:'Coldest Jan/Feb (34–46°F), warming to ~59°F by May. Daylight jumps from ~11 hrs in March to ~17 hrs by late May.',
+    foodShort:'Real Michelin scene; no negatives found (info gap)', foodGood:'Genuine Michelin-recognized scene (Wishart, Kitchin, Kitching) alongside wide international variety.', foodBad:'No substantive negative coverage surfaced in this pass — a real information gap, not a clean bill of health.',
+    transitTier:'excellent', transitNote:'Lothian Buses (50+ routes) plus trams under one ticketing system, free for under-22 Scotland residents; Old Town/New Town is very walkable.',
+    costMin:8000, costMax:11500, safety:'good', safetyNote:'UK-wide elevated terrorism threat level noted in 2026, but Scotland specifically shows lower threat levels than England; no current restrictions.',
+    program:'partial', programNote:'API runs a full 15-credit semester at University of Edinburgh — real coursework, just needs one confirmation email since it’s not on UTK’s own portal yet.',
+    sources:[['River Tay opening day','https://www.google.com/search?q=river+tay+opening+day'],['Edinburgh cost of living','https://study.ed.ac.uk/undergraduate/fees-funding/living-costs'],['Surfing near Edinburgh','https://c2csurfschool.com/surfing-near-edinburgh-for-beginners/']] },
+
+  { id:'granada', name:'Granada, Spain', hemi:'N', fit:10, fitNote:'Andalusia trout season opens May 1 — the entire Jan–Apr stretch is closed season, maybe the first week of May if the program runs that late.',
+    surf:8, surfNote:'Honestly, no real surf scene here — Granada is inland; the nearest coast (Costa Tropical) is 45–65 minutes away and is small, wind-dependent Mediterranean surf, more of a local novelty than a destination.',
+    nature:4, natureShort:'Sierra Nevada skiing & mountains', natureNote:'Sierra Nevada skiing and mountain views right from town.',
+    college:5, collegeShort:'Ideal, easy college town', collegeNote:'Students describe it as "not too big, not too small" — genuinely easy, affordable, real nightlife and free tapas with every drink.',
+    weatherShort:'45–66°F, frost → sun', weatherDetail:'Coldest in Jan (frost common, ~45°F), warming steadily to sunny ~66°F+ by May.',
+    foodShort:'Free tapas culture, though controversial (greasy, mass-produced)', foodGood:'Free tapas with every drink is a real, beloved cultural draw.', foodBad:'Real controversy: Granada’s mayor publicly called to end the free-tapas tradition (2022, still debated) — critics call it greasy/mass-produced, tied to underpaid hospitality work.',
+    transitTier:'excellent', transitNote:'Small, walkable center plus a cheap student bus card (Credibus Universitario) and a single metro line — a car is explicitly unnecessary.',
+    costMin:3500, costMax:5500, safety:'watch', safetyNote:'Spain raised to Level 2 nationally (Aug 2026, terrorism/civil unrest) — not Granada-specific, but current and real.',
+    program:'confirmed', programNote:'Already on your own shortlist — real, established program.',
+    sources:[['Andalucía fishing seasons','https://www.andalucia.com'],['Granada tapas controversy','https://www.thelocal.es/20220412/granada-mayor-causes-shock-by-calling-for-end-of-free-tapas'],['Granada transport for students','https://studentexperience.com/public-transport-in-granada']] },
+
+  { id:'valdivia', name:'Valdivia / Pucón, Chile', hemi:'S', fit:85, fitNote:'National season runs mid-Nov to ~May 6 in Patagonia-adjacent regions — covers nearly all of your window.',
+    surf:20, surfNote:'Real but low-key — Curiñanco and the Mehuín area have known breaks, "known to Chilean surfers" rather than internationally famous. Biggest swells hit in southern winter (May–Aug); summer (Jan–Mar) is the weakest, least consistent period, with only May starting to turn on.',
+    nature:4.5, natureShort:'Volcanoes, lakes, rainforest', natureNote:'Chilean Lake District — volcanoes, lakes, temperate rainforest; less touristed than Argentina’s side.',
+    college:3, collegeShort:'Real uni, path unconfirmed', collegeNote:'Universidad Austral de Chile (Valdivia) is real and takes exchange students, but the specific enrollment path isn’t confirmed yet.',
+    weatherShort:'50–78°F, dry → rain', weatherDetail:'Dry and warm Jan–Mar (up to 78°F), rain increasing sharply by April–May, no snow in this window.',
+    foodShort:'German-immigrant food/beer culture; thin coverage', foodGood:'Strong German-immigrant food/beer culture — Kunstmann brewery tours, kuchen pastries everywhere.', foodBad:'Thin review coverage overall — these are smaller towns than Bariloche, harder to independently verify the food scene.',
+    transitTier:'carneeded', transitNote:'No real urban rapid-transit system in either town; inter-city buses connect Valdivia and Pucón, but day-to-day and reaching surf beaches (like Curiñanco) is much easier with a car.',
+    costMin:5500, costMax:6000, safety:'flag', safetyNote:'Real, current concern: active Mapuche land-rights conflict in the adjacent Araucanía region, with a State of Emergency in southern Chile in effect since 2022. Not the epicenter, but close enough to name to a parent.',
+    program:'thin', programNote:'Needs real legwork to confirm a UTK-reachable enrollment path exists.',
+    sources:[['Chile Patagonia fishing season','https://www.patagonialine.com/season/'],['Chile safety/OSAC report','https://www.osac.gov/Content/Report/ad86f789-a271-4837-a479-266aa61ce9d0'],['Southern Chile surf guide','https://www.stormrider.surf/region/southern-chile']] },
+
+  { id:'bilbao', name:'Bilbao, Spain (Basque)', hemi:'N', fit:35, fitNote:'General season opens the first week of April, some catch-and-release water from mid-March — only ~5–8 usable weeks.',
+    surf:55, surfNote:'Mundaka — genuinely internationally famous, one of the best left-hand river-mouth waves in the world, 30–35 minutes away (Sopelana is closer for beginners). Peaks autumn/winter (Sep–Feb, best around January) and "almost never works in summer" — a Jan–Feb stay catches it well, fading by spring.',
+    nature:3.5, natureShort:'Pyrenees + Basque coast', natureNote:'Pyrenees and the Basque coast both within reach.',
+    college:3.5, collegeShort:'Real Deusto exchange, local vibe', collegeNote:'Real Deusto exchange with actual coursework — quieter/more local vibe than San Sebastián.',
+    weatherShort:'45–64°F, damp → sun', weatherDetail:'Cool and damp through winter (45–55°F), noticeably sunnier and warmer by spring (~64°F).',
+    foodShort:'Authentic, affordable pintxos — grittier than San Sebastián', foodGood:'Hot, made-to-order pintxos — grittier and more authentic/affordable than San Sebastián’s tourist-facing scene.', foodBad:'Basque food overall is excellent, but this is the more "local," not "polished," version — some may find it less photogenic.',
+    transitTier:'excellent', transitNote:'Metro Bilbao + Tranbia tram + city buses, all on one Barik card; Casco Viejo/Ensanche is very walkable — a car isn’t needed in the city.',
+    costMin:4000, costMax:6000, safety:'watch', safetyNote:'Basque Country is "exceptionally safe" (ETA disbanded 2018) — Spain’s national Level 2 bump is the only real caveat.',
+    program:'confirmed', programNote:'University of Deusto runs a real exchange with English-taught coursework, well-worn enough that Michigan Ross and UT Austin both use the same partnership.',
+    sources:[['Bilbao pintxos guide','https://doeatbetterexperience.com/blog/pintxos-bilbao-guide/'],['Deusto exchange','https://www.deusto.es'],['Mundaka surf guide','https://en.wikipedia.org/wiki/Mundaka_wave']] },
+
+  { id:'sansebastian', name:'San Sebastián, Spain (Basque)', hemi:'N', fit:35, fitNote:'Same Basque season as Bilbao — general season opens first week of April, ~5–8 usable weeks.',
+    surf:60, surfNote:'Zurriola Beach — a real, notable urban surf beach right in the city, hosts pro contests. Best size/consistency is fall/winter, but conditions get smaller and more beginner-friendly heading into spring — a workable window across most of your stay.',
+    nature:4, natureShort:'Best food city per capita', natureNote:'Pintxos-bar scene considered one of the best food cities on Earth per capita, Pyrenees and coast both close.',
+    college:3.5, collegeShort:'Similar access, more touristy', collegeNote:'Similar exchange access to Bilbao, more tourist-facing social scene.',
+    weatherShort:'44–57°F, damp coastal', weatherDetail:'Cool, cloudy, and damp through the window — coastal-mild but rarely warm before late spring.',
+    foodShort:'World-class pintxos, but old town is a tourist trap', foodGood:'Elaborate, photogenic cold-display pintxos — genuinely one of the world’s great food cities.', foodBad:'Old town gets called a straight-up "tourist trap" by some visitors — overcrowding, inflated prices, sandwich-board menu tells.',
+    transitTier:'good', transitNote:'DBus city buses with student discounts and some 24-hour routes; no metro/tram, but the historic core is compact and walkable in about 30 minutes.',
+    costMin:6000, costMax:10000, safety:'watch', safetyNote:'Same Basque safety profile as Bilbao — Spain’s national Level 2 bump is the only real caveat.',
+    program:'partial', programNote:'Same Deusto-adjacent access as Bilbao likely applies, but Bilbao is the better-documented path.',
+    sources:[['San Sebastián vs Bilbao','https://www.thegeographicalcure.com/post/face-off-bilbao-vs-san-sebastian'],['San Sebastián cost of living','https://www.expatistan.com/cost-of-living/comparison/san-sebastian/bilbao'],['San Sebastián surf guide','https://thesurfatlas.com/surfing-spain/san-sebastian-surf/']] },
+
+  { id:'capetown', name:'Cape Town, South Africa', hemi:'S', fit:5, fitNote:'Western Cape trout runs May–Sept (their winter) — the exact opposite of Jan–May. Closed season your entire stay.',
+    surf:55, surfNote:'Muizenberg (beginner-friendly) and Kalk Bay/Atlantic-side breaks are real and internationally known — Cape Town is a legitimate global surf city. Winter (May–Aug) has the biggest swell and summer (Jan–Feb) is the weakest, choppiest stretch, but March–May is called out as a genuine "sweet spot" — warm water, dying wind, consistent swell.',
+    nature:4.5, natureShort:'Table Mountain & Winelands', natureNote:'Table Mountain, Cape Winelands, coastline — incredible, just not for freshwater fly fishing on this calendar.',
+    college:5, collegeShort:'One of the best social scenes anywhere', collegeNote:'One of the strongest study-abroad social scenes anywhere — CIEE + direct enroll at UCT, huge American student presence.',
+    weatherShort:'65–79°F, dry → rain', weatherDetail:'Hot, dry Mediterranean summer Jan–Mar (up to 79°F), rain increasing by May as their winter approaches — opposite trajectory from Vancouver/Hobart.',
+    foodShort:'Acclaimed wine & braai scene, lightly verified', foodGood:'Acclaimed wine/food scene — Cape Winelands, braai culture, Cape Malay fusion.', foodBad:'Thin negative coverage found in this pass — flagged as a research gap, not a clean bill of health.',
+    transitTier:'good', transitNote:'MyCiTi bus-rapid-transit covers the city bowl and southern suburbs with student discounts; UCT bars first-years from bringing cars, but many students supplement with Uber after dark.',
+    costMin:2200, costMax:3600, safety:'flag', safetyNote:'The biggest safety flag on this whole list — Level 2, composite safety score 39/100, opportunistic crime (pickpocketing/phone theft) is the top risk, some reports of rising violent crime. Standard guidance there is "never walk at night."',
+    program:'confirmed', programNote:'Real, well-established program — CIEE + direct enroll at UCT.',
+    sources:[['Cape Town fly fishing (saltwater fallback)','https://fishingbooker.com/blog/cape-town-fishing/'],['Cape Town safety rating','https://ismytripsafe.com/south-africa/cape-town'],['Muizenberg surf guide','https://www.surf-forecast.com/breaks/Muizenberg']] },
+
+  { id:'florence', name:'Florence, Italy', hemi:'N', fit:66, fitNote:'Tuscany’s trout season opens Feb 22 (Regione Toscana official date), closing early October — you lose January and three weeks of February, but March–May is fully fishable in real water: the Casentino valley (~1hr away, locally billed as "Italy’s capital of sportfishing") and Mugello no-kill zones. ~66% of your window falls in season.',
+    surf:15, surfNote:'Marina di Pietrasanta on the Versilia coast, 1.5–2 hrs away — windswell-dominated, 0.4–0.5m waves, beginner/longboard only, and "never gets crowded" precisely because it doesn’t draw real surfers. Fall/winter (the start of your window) is relatively the better half of a weak year — this is not a real surf destination.',
+    nature:4, natureShort:'Chianti hills & Apuan Alps mountains', natureNote:'Rolling Chianti hills (vineyards, cypress-lined roads, hilltop villages) plus the Apuan Alps to the north — real mountains to ~2,000m, a UNESCO Geopark laced with hiking trails and karst caves.',
+    college:5, collegeShort:'Huge, well-trodden American study-abroad hub', collegeNote:'One of the most saturated US study-abroad markets anywhere — an easy, built-in social scene with organized excursions and deep alumni infrastructure, though that also means a real "American bubble" reputation if you don’t push to meet locals.',
+    weatherShort:'48–72°F, mild → warm', weatherDetail:'Jan ~48°F, Feb ~52°F, Mar ~59°F (unstable — mild/sunny mixed with cold/rainy stretches), Apr ~64°F, May ~72°F and consistently pleasant.',
+    foodShort:'Legendary Tuscan food, but real tourist-trap pricing near landmarks', foodGood:'Bistecca alla fiorentina, ribollita, direct Chianti wine access, and genuinely great non-touristy trattorias if you know where to look.', foodBad:'Documented tourist-trap pricing right near the Duomo/Uffizi — €25 pasta, five-language menus, "menù turistico" scams — plus an active overtourism debate about the food scene eroding under it.',
+    transitTier:'excellent', transitNote:'Historic center is walkable corner-to-corner in ~25 minutes; a car is explicitly discouraged (restricted ZTL zone, expensive parking mistakes). Real ATAF/Autolinee Toscane buses plus an expanding tram network (3 lines active) reach the outer neighborhoods and airport.',
+    costMin:4500, costMax:8000, safety:'good', safetyNote:'No elevated advisory for Italy or Florence specifically. The real, documented risk is pickpocketing/scams in dense tourist zones (Ponte Vecchio, San Lorenzo Market, near the Duomo, bus lines 7/10) — tourists report 3–4 scam attempts/day in high-traffic areas, though March 2026 theft reports were actually down 12% year-over-year.',
+    program:'confirmed', programNote:'Two independently confirmed, well-established direct paths: LdM (Lorenzo de’ Medici Institute, a Marist University branch campus since 2006, 2,500+ students/year, general-electives/liberal-arts heavy) and Syracuse Florence. More redundant program pathways than almost anywhere else on this list — low risk on "can I actually get there."',
+    sources:[['Tuscany 2026 trout season dates','https://www.regione.toscana.it/-/apertura-pesca-alla-trota-2026'],['LdM Institute','https://ldminstitute.com/'],['Florence bus/tram guide','https://www.florencetourism.org/florence-bus-tram-guide/']] },
+
+  { id:'barcelona', name:'Barcelona, Spain', hemi:'N', fit:30, fitNote:'Catalan Pyrenees: low-altitude zones open Mar 18–Oct 20 (overlapping ~75 of your 151 days), high-altitude zones and the Aran Valley don’t open until May 1 or later. Real overlap exists, but it’s the coldest, weakest part of the season (spring runoff, cold water) — confirm exact current-year dates via the Generalitat de Catalunya before finalizing, outfitter sites drift year to year.',
+    surf:35, surfNote:'Real local spots right in the city (Barceloneta, Masnou, Montgat, Castelldefels) — wind-driven chop, not real groundswell, nothing like the Basque coast. Best window is Oct–March, which overlaps the front half of your semester; call it a casual longboard/bodyboard scene, not a real surf culture.',
+    nature:4, natureShort:'Montserrat, Costa Brava & Pyrenees day trips', natureNote:'Montserrat (serrated mountains + monastery, ~1hr away), the rugged Costa Brava coastline, and the Pyrenees/La Cerdanya valley (~1.5hr, skiing in winter) — strong scenic variety, but it’s day-trip nature an hour-plus away, not out-your-back-door.',
+    college:5, collegeShort:'Most popular US study-abroad city in Spain', collegeNote:'Consistently the single most popular US study-abroad city in Spain — nightlife spans beach clubs to underground techno to bar-crawl zones, with a huge international student density that cuts both ways (easy social scene, very "American bubble" if you don’t push past it).',
+    weatherShort:'45–70°F, mild Mediterranean', weatherDetail:'Jan ~50°F avg, Feb 45–56°F, Mar 48–59°F, Apr 52–63°F, May ~70°F avg — mild, no snow, comfortable, and warms quickly by May.',
+    foodShort:'Real tapas/Boqueria scene, but Las Ramblas is a legit tourist trap', foodGood:'Tapas culture, Boqueria market, Catalan specialties (pa amb tomàquet, seafood, vermouth culture), strong scene in El Born, Gràcia, and Poble-sec.', foodBad:'Las Ramblas is a documented, named tourist trap — inflated prices, menu-switch scams, unordered "table fees," and touristy paella that’s a "far cry" from the real thing. Good food requires knowing to avoid the main drag.',
+    transitTier:'excellent', transitNote:'Modern metro + 230+ bus lines + night buses + trams, metro every 2–4 minutes at peak, student pass ~€20–40/month. No car needed — one of the most transit-friendly cities on this whole list.',
+    costMin:4500, costMax:7500, safety:'watch', safetyNote:'Spain raised to Level 2 nationally (Aug 2026) — same as Granada/Bilbao/Pamplona. Barcelona specifically carries a long-standing, well-corroborated reputation as Spain’s pickpocket hotspot, concentrated on Las Ramblas and Metro Line 3. Catalonia independence politics remain a live local topic (2026 language-quota friction) but it’s simmering politics, not street violence — worth knowing about, not a safety concern.',
+    program:'confirmed', programNote:'CIEE runs a full Barcelona lineup including a Liberal Arts Language Immersion / general Semester in Barcelona track that fits general electives without needing a business concentration; IES Abroad also runs standard programs there. Confirm which provider UTK already has an articulation agreement with for actual credit transfer.',
+    sources:[['CIEE Barcelona programs','https://www.ciee.org/go-abroad/college-study-abroad/locations/spain/barcelona'],['Spanish Pyrenees fishing seasons','https://www.aardvarkmcleod.com/spanish-pyrenees-year-round-fishing/'],['Barcelona transit (TMB)','https://www.tmb.cat/en/home']] },
+];
+
+const COLUMN_DEFS = [
+  {key:'fit', label:'Fishing Fit'},
+  {key:'surf', label:'Surf Fit'},
+  {key:'nature', label:'Nature'},
+  {key:'college', label:'College Scene'},
+  {key:'weather', label:'Weather Jan–May'},
+  {key:'food', label:'Food'},
+  {key:'transit', label:'Transit'},
+  {key:'cost', label:'Cost / Semester'},
+  {key:'safety', label:'Safety'},
+  {key:'program', label:'Program'},
+];
+const CATEGORY_KEYWORDS = {
+  fit: ['fish','trout','salmon','steelhead','season dates','pyrenees fishing'],
+  surf: ['surf'],
+  weather: ['climate'],
+  food: ['food','pintxos','tapas','cuisine','dining','restaurant','bistro'],
+  transit: ['transit','bus','tram','metro','transport','metlink','commuter'],
+  safety: ['safety','advisory','osac'],
+  program: ['program','exchange','university','institute','ciee','ies','deusto','otago','utas','ubc','sauder','ldm','zsem'],
+  cost: ['cost','living','budget'],
+};
+
+function stars(n){
+  let s='';
+  for(let i=1;i<=5;i++){
+    s += `<span class="${i<=Math.round(n)?'on':''}">★</span>`;
+  }
+  return `<span class="stars">${s}</span>`;
+}
+function scoreColor(pct){
+  // continuous red -> yellow -> green as the score rises. 0 = hue 0 (red), 50 = hue 60 (yellow), 100 = hue 120 (green).
+  const clamped = Math.max(0, Math.min(100, pct));
+  const hue = clamped * 1.2;
+  return `hsl(${hue}, 72%, 42%)`;
+}
+function fitBar(pct){
+  return `<span class="bar-track"><span class="bar-fill" style="width:${pct}%; background:${scoreColor(pct)}"></span></span><span class="bar-label">${pct}%</span>`;
+}
+function safetyBadge(tier){
+  const map = {good:['🛡','good','Good'], watch:['⚠️','watch','Watch'], flag:['🚩','flag','Flag']};
+  const [icon,cls,label] = map[tier];
+  return `<span class="badge ${cls}">${icon} ${label}</span>`;
+}
+function programBadge(status){
+  const map = {confirmed:['confirmed','Confirmed'], partial:['partial','Real, unconfirmed path'], thin:['thin','Thin — needs work']};
+  const [cls,label] = map[status];
+  return `<span class="badge ${cls}">${label}</span>`;
+}
+function transitBadge(tier){
+  const map = {excellent:['excellent','Excellent — no car'], good:['good','Good'], limited:['limited','Limited'], carneeded:['carneeded','Car needed']};
+  const [cls,label] = map[tier];
+  return `<span class="badge ${cls}">${label}</span>`;
+}
+function transitScore(tier){ return {excellent:100, good:70, limited:40, carneeded:15}[tier]; }
+function costScore(min,max){
+  const mid=(min+max)/2;
+  const lo=2900, hi=9750;
+  return 100 - ((mid-lo)/(hi-lo))*100;
+}
+function safetyScore(tier){ return tier==='good'?100:(tier==='watch'?55:15); }
+function matchScore(d){
+  const cs = costScore(d.costMin,d.costMax);
+  const ss = safetyScore(d.safety);
+  return (d.fit + d.nature*20 + d.college*20 + cs + ss) / 5;
+}
+function programScore(status){ return {confirmed:3, partial:2, thin:1}[status]; }
+
+// Fixed, continuous overall rank by Match Score — computed once, independent of whatever
+// column the table is currently sorted/filtered by, so "where does this stand overall"
+// never changes underneath you.
+const RANK_BY_ID = (() => {
+  const sorted = [...DATA].sort((a,b) => matchScore(b) - matchScore(a));
+  const map = {};
+  sorted.forEach((d,i) => { map[d.id] = i+1; });
+  return map;
+})();
+function rankBadge(id){
+  return `<span class="overall-rank">#${RANK_BY_ID[id]} overall</span>`;
+}
+
+function toBullets(text){
+  if(!text) return [];
+  const parts = text.split(/(?<=[.!?])\s+(?=[A-Z0-9(])/).map(s=>s.trim()).filter(Boolean);
+  const out = [];
+  parts.forEach(p=>{
+    if(p.length>150 && p.includes(' — ')){
+      const idx = p.indexOf(' — ');
+      out.push(p.slice(0,idx).trim()+'.');
+      out.push(p.slice(idx+3).trim());
+    } else {
+      out.push(p);
+    }
+  });
+  return out;
+}
+function bulletsHtml(text){
+  return `<ul>${toBullets(text).map(b=>`<li>${b}</li>`).join('')}</ul>`;
+}
+function foodHtml(good,bad){
+  const g = toBullets(good).map(b=>`<li class="good-txt">✓ ${b}</li>`);
+  const b = toBullets(bad).map(x=>`<li class="bad-txt">✗ ${x}</li>`);
+  return `<ul>${g.concat(b).join('')}</ul>`;
+}
+function matchedSources(d, catKey){
+  const kws = CATEGORY_KEYWORDS[catKey] || [];
+  return d.sources.filter(s => kws.some(k=>s[0].toLowerCase().includes(k)));
+}
+function sourceLinksFor(d, catKey){
+  const matches = matchedSources(d, catKey);
+  if(!matches.length) return '';
+  return matches.map(s=>`<a class="src-link" href="${s[1]}" target="_blank" rel="noopener">🔗 ${s[0]}</a>`).join('');
+}
+function linkToSource(innerHtml, d, catKey){
+  const matches = matchedSources(d, catKey);
+  if(!matches.length) return innerHtml;
+  return `<a href="${matches[0][1]}" target="_blank" rel="noopener" class="badge-link" title="Source: ${matches[0][0]}">${innerHtml}</a>`;
+}
+function photoLinksHtml(d){
+  const q = encodeURIComponent(d.name.replace(/\(.*?\)/g,'').replace(/\//g,' ').replace(/\s+/g,' ').trim());
+  const imgSearch = `https://www.google.com/search?tbm=isch&q=${q}`;
+  const wikiSearch = `https://en.wikipedia.org/wiki/Special:Search?search=${q}`;
+  const commons = `https://commons.wikimedia.org/w/index.php?search=${q}&title=Special:MediaSearch`;
+  return `<a class="src-link" href="${imgSearch}" target="_blank" rel="noopener">📷 Google Images</a><a class="src-link" href="${wikiSearch}" target="_blank" rel="noopener">📷 Wikipedia</a><a class="src-link" href="${commons}" target="_blank" rel="noopener">📷 Wikimedia Commons</a>`;
+}
+function moreSourcesHtml(d){
+  const usedUrls = new Set();
+  Object.keys(CATEGORY_KEYWORDS).forEach(k=>matchedSources(d,k).forEach(s=>usedUrls.add(s[1])));
+  const leftover = d.sources.filter(s=>!usedUrls.has(s[1]));
+  if(!leftover.length) return '';
+  return `<div class="detail-col"><h4>More sources</h4><div class="more-sources">${leftover.map(s=>`<a class="src-link" href="${s[1]}" target="_blank" rel="noopener">🔗 ${s[0]}</a>`).join('')}</div></div>`;
+}
+function detailInnerHtml(d){
+  return `
+    <div class="detail-col"><h4>Photos</h4><p>Real, live photo searches for ${d.name} — not curated by me, so they'll always be current:</p>${photoLinksHtml(d)}</div>
+    <div class="detail-col"><h4>Fishing Fit — ${d.fit}%</h4>${bulletsHtml(d.fitNote)}${sourceLinksFor(d,'fit')}</div>
+    <div class="detail-col"><h4>Surf Fit — ${d.surf > 0 ? d.surf + '%' : 'No real option'}</h4>${bulletsHtml(d.surfNote)}${sourceLinksFor(d,'surf')}</div>
+    <div class="detail-col"><h4>Nature</h4>${bulletsHtml(d.natureNote)}</div>
+    <div class="detail-col"><h4>College &amp; Social Scene</h4>${bulletsHtml(d.collegeNote)}</div>
+    <div class="detail-col"><h4>Weather Jan–May</h4>${bulletsHtml(d.weatherDetail)}${sourceLinksFor(d,'weather')}</div>
+    <div class="detail-col"><h4>Food</h4>${foodHtml(d.foodGood,d.foodBad)}${sourceLinksFor(d,'food')}</div>
+    <div class="detail-col"><h4>Public Transit</h4>${bulletsHtml(d.transitNote)}${sourceLinksFor(d,'transit')}</div>
+    <div class="detail-col"><h4>Cost of Living</h4><p>$${d.costMin.toLocaleString()}–$${d.costMax.toLocaleString()} for a 4–5 month semester (living costs only, excl. tuition/flights).</p>${sourceLinksFor(d,'cost')}</div>
+    <div class="detail-col"><h4>Safety</h4>${bulletsHtml(d.safetyNote)}${sourceLinksFor(d,'safety')}</div>
+    <div class="detail-col"><h4>Program Status</h4>${bulletsHtml(d.programNote)}${sourceLinksFor(d,'program')}</div>
+    ${moreSourcesHtml(d)}
+  `;
+}
+
+let sortKey = 'match', sortDir = -1;
+let filterText = '';
+let hemiFilter = 'all';
+let confirmedOnly = false;
+let hideFlagged = false;
+let realSurfOnly = false;
+let allExpanded = false;
+let expandedIds = new Set();
+let hiddenCols = new Set();
+let selectedIds = new Set();
+let activeTab = 'table';
+
+function buildHead(){
+  const headRow = document.getElementById('headRow');
+  const base = [
+    {key:'chk', label:'', nosort:true, width:'20px'},
+    {key:'rank', label:'#', nosort:true, width:'26px'},
+    {key:'name', label:'Location'},
+    {key:'match', label:'Match Score'},
+  ];
+  const tail = COLUMN_DEFS;
+  headRow.innerHTML = base.concat(tail).map(c=>{
+    const hidden = hiddenCols.has(c.key) ? 'style="display:none"' : '';
+    const w = c.width ? `style="width:${c.width}"` : '';
+    return `<th data-key="${c.key}" ${c.nosort?'class="nosort"':''} ${hidden||w}>${c.label}</th>`;
+  }).join('');
+}
+
+function render(){
+  const rows = DATA.map(d => ({...d, match: matchScore(d), mid: (d.costMin+d.costMax)/2}));
+
+  let filtered = rows.filter(r => {
+    if (hemiFilter !== 'all' && r.hemi !== hemiFilter) return false;
+    if (confirmedOnly && r.program !== 'confirmed') return false;
+    if (hideFlagged && r.safety === 'flag') return false;
+    if (realSurfOnly && r.surf < 15) return false;
+    if (filterText) {
+      const hay = (r.name+' '+r.fitNote+' '+r.surfNote+' '+r.natureNote+' '+r.collegeNote+' '+r.foodGood+' '+r.foodBad+' '+r.transitNote+' '+r.safetyNote+' '+r.programNote).toLowerCase();
+      if (!hay.includes(filterText.toLowerCase())) return false;
+    }
+    return true;
+  });
+
+  filtered.sort((a,b) => {
+    let av, bv;
+    switch(sortKey){
+      case 'name': return sortDir * a.name.localeCompare(b.name);
+      case 'match': av=a.match; bv=b.match; break;
+      case 'fit': av=a.fit; bv=b.fit; break;
+      case 'surf': av=a.surf; bv=b.surf; break;
+      case 'nature': av=a.nature; bv=b.nature; break;
+      case 'college': av=a.college; bv=b.college; break;
+      case 'cost': av=a.mid; bv=b.mid; break;
+      case 'transit': av=transitScore(a.transitTier); bv=transitScore(b.transitTier); break;
+      case 'safety': av=safetyScore(a.safety); bv=safetyScore(b.safety); break;
+      case 'program': return sortDir * a.program.localeCompare(b.program);
+      default: av=a.match; bv=b.match;
+    }
+    return sortDir * (av - bv);
+  });
+
+  buildHead();
+  const visCount = 4 + COLUMN_DEFS.length - hiddenCols.size;
+
+  const tbody = document.getElementById('tbody');
+  tbody.innerHTML = '';
+  filtered.forEach((d, i) => {
+    const tr = document.createElement('tr');
+    tr.className = 'row';
+    tr.dataset.id = d.id;
+    const open = allExpanded || expandedIds.has(d.id);
+    const cellsHtml = {
+      chk: `<td class="chk-cell" data-col="chk"><input type="checkbox" class="compare-check" data-id="${d.id}" ${selectedIds.has(d.id)?'checked':''}></td>`,
+      rank: `<td class="rank" data-col="rank">${i+1}</td>`,
+      name: `<td data-col="name"><span class="chev">${open ? '▾' : '▸'}</span><span class="locname">${d.name}</span><span class="hemi">${d.hemi === 'S' ? 'S. Hemisphere' : 'N. Hemisphere'}</span>${rankBadge(d.id)}</td>`,
+      match: `<td data-col="match">${fitBar(Math.round(d.match))}</td>`,
+      fit: `<td data-col="fit">${linkToSource(fitBar(d.fit), d, 'fit')}</td>`,
+      surf: `<td data-col="surf">${d.surf > 0 ? linkToSource(fitBar(d.surf), d, 'surf') : '<span class="no-surf">No real surf option</span>'}</td>`,
+      nature: `<td data-col="nature">${stars(d.nature)}<span class="short-phrase">${d.natureShort}</span></td>`,
+      college: `<td data-col="college">${stars(d.college)}<span class="short-phrase">${d.collegeShort}</span></td>`,
+      weather: `<td data-col="weather">${linkToSource(d.weatherShort, d, 'weather')}</td>`,
+      food: `<td data-col="food">${linkToSource(`<span class="food-short">${d.foodShort}</span>`, d, 'food')}</td>`,
+      transit: `<td data-col="transit">${linkToSource(transitBadge(d.transitTier), d, 'transit')}</td>`,
+      cost: `<td class="cost" data-col="cost">${linkToSource(`$${Math.round((d.costMin+d.costMax)/2).toLocaleString()}<br><small>$${d.costMin.toLocaleString()}–${d.costMax.toLocaleString()}</small>`, d, 'cost')}</td>`,
+      safety: `<td data-col="safety">${linkToSource(safetyBadge(d.safety), d, 'safety')}</td>`,
+      program: `<td data-col="program">${linkToSource(programBadge(d.program), d, 'program')}</td>`,
+    };
+    const order = ['chk','rank','name','match',...COLUMN_DEFS.map(c=>c.key)];
+    tr.innerHTML = order.map(k=>{
+      if (k!=='chk' && k!=='rank' && k!=='name' && k!=='match' && hiddenCols.has(k)) return '';
+      return cellsHtml[k];
+    }).join('');
+    tbody.appendChild(tr);
+
+    const detailTr = document.createElement('tr');
+    detailTr.className = open ? 'detail-row' : 'detail-row hidden-row';
+    detailTr.dataset.detailFor = d.id;
+    detailTr.innerHTML = `<td colspan="${visCount}"><div class="detail-inner">${detailInnerHtml(d)}</div></td>`;
+    tbody.appendChild(detailTr);
+  });
+
+  document.querySelectorAll('#headRow th').forEach(th => {
+    th.querySelectorAll('.arrow').forEach(a=>a.remove());
+    if (th.dataset.key === sortKey) {
+      th.insertAdjacentHTML('beforeend', `<span class="arrow">${sortDir===1?'▲':'▼'}</span>`);
+    }
+  });
+
+  document.getElementById('compareBadge').textContent = selectedIds.size;
+  document.getElementById('compareBadge').classList.toggle('hidden-row', selectedIds.size===0);
+}
+
+// column-visibility toggle chips
+const colToggleBar = document.querySelector('.col-toggles');
+COLUMN_DEFS.forEach(c=>{
+  const chip = document.createElement('div');
+  chip.className = 'chip-toggle active';
+  chip.textContent = c.label;
+  chip.dataset.col = c.key;
+  chip.addEventListener('click', () => {
+    if (hiddenCols.has(c.key)) { hiddenCols.delete(c.key); chip.classList.add('active'); }
+    else { hiddenCols.add(c.key); chip.classList.remove('active'); }
+    render();
+  });
+  colToggleBar.appendChild(chip);
+});
+
+document.getElementById('tbody').addEventListener('click', (e) => {
+  if (e.target.closest('a.badge-link')) return; // let the source link open on its own, don't also toggle the row
+  if (e.target.classList.contains('compare-check')) {
+    const id = e.target.dataset.id;
+    if (e.target.checked) selectedIds.add(id); else selectedIds.delete(id);
+    document.getElementById('compareBadge').textContent = selectedIds.size;
+    document.getElementById('compareBadge').classList.toggle('hidden-row', selectedIds.size===0);
+    if (activeTab === 'compare') renderCompare();
+    return;
+  }
+  const tr = e.target.closest('tr.row');
+  if (!tr) return;
+  const id = tr.dataset.id;
+  const detail = document.querySelector(`tr[data-detail-for="${id}"]`);
+  if (detail) {
+    const nowHidden = detail.classList.toggle('hidden-row');
+    if (nowHidden) expandedIds.delete(id); else expandedIds.add(id);
+    const chev = tr.querySelector('.chev');
+    if (chev) chev.textContent = nowHidden ? '▸' : '▾';
+  }
+});
+
+document.getElementById('headRow').addEventListener('click', (e) => {
+  const th = e.target.closest('th');
+  if (!th || th.classList.contains('nosort')) return;
+  const key = th.dataset.key;
+  if (key === sortKey) { sortDir *= -1; } else { sortKey = key; sortDir = (key === 'cost') ? 1 : -1; }
+  syncSortControls();
+  render();
+});
+
+function syncSortControls(){
+  const sel = document.getElementById('sortKeySelect');
+  if (sel && [...sel.options].some(o=>o.value===sortKey)) sel.value = sortKey;
+  const btn = document.getElementById('sortDirBtn');
+  if (btn) {
+    // for cost, ascending (dir=1) means cheapest-first = "best first"; for everything else, descending (dir=-1) means best first
+    const isBestFirst = sortKey === 'cost' ? sortDir === 1 : sortDir === -1;
+    btn.textContent = isBestFirst ? '▼ Best first' : '▲ Worst first';
+  }
+}
+
+document.getElementById('sortKeySelect').addEventListener('change', (e) => {
+  sortKey = e.target.value;
+  sortDir = (sortKey === 'cost' || sortKey === 'name') ? 1 : -1;
+  syncSortControls();
+  render();
+});
+document.getElementById('sortDirBtn').addEventListener('click', () => {
+  sortDir *= -1;
+  syncSortControls();
+  render();
+});
+
+document.getElementById('search').addEventListener('input', (e) => { filterText = e.target.value; render(); });
+document.getElementById('hemiFilter').addEventListener('change', (e) => { hemiFilter = e.target.value; render(); });
+document.getElementById('confirmedOnly').addEventListener('click', function(){
+  confirmedOnly = !confirmedOnly;
+  this.classList.toggle('active', confirmedOnly);
+  render();
+});
+document.getElementById('safeOnly').addEventListener('click', function(){
+  hideFlagged = !hideFlagged;
+  this.classList.toggle('active', hideFlagged);
+  render();
+});
+document.getElementById('surfOnly').addEventListener('click', function(){
+  realSurfOnly = !realSurfOnly;
+  this.classList.toggle('active', realSurfOnly);
+  render();
+});
+
+const expandToggle = document.getElementById('expandToggle');
+expandToggle.addEventListener('click', () => {
+  allExpanded = !allExpanded;
+  expandedIds.clear();
+  expandToggle.textContent = allExpanded ? '▾ Collapse all rows' : '▸ Expand all rows';
+  render();
+});
+
+const themeToggle = document.getElementById('themeToggle');
+const stored = localStorage.getItem('sa-theme');
+if (stored) document.documentElement.setAttribute('data-theme', stored);
+themeToggle.addEventListener('click', () => {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const next = cur === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('sa-theme', next);
+});
+
+// Tabs
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', () => {
+    activeTab = btn.dataset.tab;
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b===btn));
+    document.getElementById('view-table').classList.toggle('hidden-row', activeTab!=='table');
+    document.getElementById('view-compare').classList.toggle('hidden-row', activeTab!=='compare');
+    if (activeTab === 'compare') renderCompare();
+  });
+});
+
+const COMPARE_DIMENSIONS = [
+  {label:'Match Score', value:d=>matchScore(d), higherBetter:true, render:d=>fitBar(Math.round(matchScore(d)))},
+  {label:'Fishing Fit', value:d=>d.fit, higherBetter:true, render:d=>`${fitBar(d.fit)}${bulletsHtml(d.fitNote)}${sourceLinksFor(d,'fit')}`},
+  {label:'Surf Fit', value:d=>d.surf, higherBetter:true, render:d=> (d.surf>0 ? fitBar(d.surf) : '<span class="no-surf">No real surf option</span>') + bulletsHtml(d.surfNote) + sourceLinksFor(d,'surf')},
+  {label:'Nature', value:d=>d.nature, higherBetter:true, render:d=>`${stars(d.nature)}${bulletsHtml(d.natureNote)}`},
+  {label:'College Scene', value:d=>d.college, higherBetter:true, render:d=>`${stars(d.college)}${bulletsHtml(d.collegeNote)}`},
+  {label:'Weather Jan–May', render:d=>`<strong>${d.weatherShort}</strong>${bulletsHtml(d.weatherDetail)}${sourceLinksFor(d,'weather')}`},
+  {label:'Food', render:d=>`${foodHtml(d.foodGood,d.foodBad)}${sourceLinksFor(d,'food')}`},
+  {label:'Public Transit', value:d=>transitScore(d.transitTier), higherBetter:true, render:d=>`${transitBadge(d.transitTier)}${bulletsHtml(d.transitNote)}${sourceLinksFor(d,'transit')}`},
+  {label:'Cost / Semester', value:d=>(d.costMin+d.costMax)/2, higherBetter:false, render:d=>`<strong>$${Math.round((d.costMin+d.costMax)/2).toLocaleString()}</strong> ($${d.costMin.toLocaleString()}–${d.costMax.toLocaleString()})${sourceLinksFor(d,'cost')}`},
+  {label:'Safety', value:d=>safetyScore(d.safety), higherBetter:true, render:d=>`${safetyBadge(d.safety)}${bulletsHtml(d.safetyNote)}${sourceLinksFor(d,'safety')}`},
+  {label:'Program', value:d=>programScore(d.program), higherBetter:true, render:d=>`${programBadge(d.program)}${bulletsHtml(d.programNote)}${sourceLinksFor(d,'program')}`},
+  {label:'Photos', render:d=>photoLinksHtml(d)},
+];
+const MAX_COMPARE = 5;
+
+// which shown locations "win" a dimension (ties all win); dimensions without a `value`
+// fn (Weather, Food — no objective better/worse) are skipped, not force-ranked.
+function bestIdsFor(dim, shown){
+  if (!dim.value) return new Set();
+  const vals = shown.map(d => dim.value(d));
+  const best = dim.higherBetter ? Math.max(...vals) : Math.min(...vals);
+  const ids = new Set();
+  shown.forEach((d,i) => { if (vals[i] === best) ids.add(d.id); });
+  return ids;
+}
+
+function renderCompare(){
+  const container = document.getElementById('compareContent');
+  const selected = DATA.filter(d => selectedIds.has(d.id));
+
+  if (selected.length === 0) {
+    container.innerHTML = `<div class="compare-empty">Check the box on any row in the Table tab to add a location here. Pick at least 2 to compare side by side (up to ${MAX_COMPARE}).</div>`;
+    return;
+  }
+  if (selected.length === 1) {
+    container.innerHTML = `
+      <div class="compare-picker">
+        <div class="chip-toggle active">${selected[0].name} ${rankBadge(selected[0].id)} <button class="remove-compare" data-id="${selected[0].id}">×</button></div>
+      </div>
+      <div class="compare-empty">Pick at least one more location from the Table tab to start comparing.</div>
+    `;
+    attachRemoveHandlers();
+    return;
+  }
+
+  const shown = selected.slice(0, MAX_COMPARE);
+  const overflow = selected.length - shown.length;
+
+  container.innerHTML = `
+    <button class="expandToggle clearCompare" id="clearCompareBtn">Clear all selected</button>
+    ${overflow > 0 ? `<div class="compare-empty" style="margin-bottom:12px;">Showing the first ${MAX_COMPARE} selected — remove one to swap in another (${overflow} not shown).</div>` : ''}
+    <div class="compare-empty" style="text-align:left; padding:10px 14px; margin-bottom:12px;">🏆 = best in that row among the locations shown. Weather and Food aren't ranked — they're judgment calls, not a score.</div>
+    <div class="compare-table-wrap">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th style="width:140px;">Dimension</th>
+            ${shown.map(d=>`<th>${d.name}${rankBadge(d.id)}<button class="remove-compare" data-id="${d.id}" title="Remove from compare">×</button></th>`).join('')}
+          </tr>
+        </thead>
+        <tbody>
+          ${COMPARE_DIMENSIONS.map(dim=>{
+            const bestIds = bestIdsFor(dim, shown);
+            return `
+            <tr>
+              <td class="dim-label">${dim.label}</td>
+              ${shown.map(d=>{
+                const isBest = bestIds.has(d.id);
+                return `<td class="${isBest?'best-cell':''}">${isBest?'<span class="best-tag">🏆 Best</span><br>':''}${dim.render(d)}</td>`;
+              }).join('')}
+            </tr>
+          `;}).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+  attachRemoveHandlers();
+  document.getElementById('clearCompareBtn').addEventListener('click', () => {
+    selectedIds.clear();
+    renderCompare();
+    render();
+  });
+}
+function attachRemoveHandlers(){
+  document.querySelectorAll('.remove-compare').forEach(btn=>{
+    btn.addEventListener('click', () => {
+      selectedIds.delete(btn.dataset.id);
+      renderCompare();
+      render();
+    });
+  });
+}
+
+syncSortControls();
+render();
+</script>
+</body>
+</html>
