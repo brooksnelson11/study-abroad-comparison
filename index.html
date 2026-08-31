@@ -131,6 +131,10 @@
   a.badge-link:hover { opacity: 0.8; }
   .rank { color: var(--text-muted); font-size: 12px; width: 24px; }
   .chev { display: inline-block; width: 12px; color: var(--text-muted); font-size: 10px; }
+  tr.draggable-row { cursor: grab; }
+  tr.draggable-row.dragging { opacity: 0.4; }
+  tr.draggable-row.drag-over-target { box-shadow: inset 0 2px 0 var(--blue-450); }
+  .drag-handle { color: var(--text-muted); cursor: grab; font-size: 13px; margin-right: 2px; }
   .chk-cell { width: 20px; text-align: center; }
   .chk-cell input { cursor: pointer; }
 
@@ -315,6 +319,10 @@ const DATA = [
   {"id":"barcelona","name":"Barcelona, Spain","hemi":"N","fit":40,"fitNote":"Correction: the winter \"bottom-fishing\" charters I cited earlier are bait/bottom-rig only — NOT fly-fishable, confirmed. The real fly option near Barcelona is surf/shore fly fishing for sea bass (and a summer little tunny/mahi offshore fly trip, but that's a different season and further out). Pyrenees river trout is still the weak, cold, March 18+ option.","surf":35,"surfNote":"Real local spots right in the city (Barceloneta, Masnou, Montgat, Castelldefels) — wind-driven chop, not real groundswell, nothing like the Basque coast. Best window is Oct–March, which overlaps the front half of your semester; call it a casual longboard/bodyboard scene, not a real surf culture.","nature":4,"natureShort":"Montserrat, Costa Brava & Pyrenees day trips","natureNote":"Montserrat (serrated mountains + monastery, ~1hr away), the rugged Costa Brava coastline, and the Pyrenees/La Cerdanya valley (~1.5hr, skiing in winter) — strong scenic variety, but it’s day-trip nature an hour-plus away, not out-your-back-door.","college":5,"collegeShort":"Most popular US study-abroad city in Spain","collegeNote":"Consistently the single most popular US study-abroad city in Spain — nightlife spans beach clubs to underground techno to bar-crawl zones, with a huge international student density that cuts both ways (easy social scene, very \"American bubble\" if you don’t push past it).","weatherShort":"45–70°F, mild Mediterranean","weatherDetail":"Jan ~50°F avg, Feb 45–56°F, Mar 48–59°F, Apr 52–63°F, May ~70°F avg — mild, no snow, comfortable, and warms quickly by May.","foodShort":"Real tapas/Boqueria scene, but Las Ramblas is a legit tourist trap","foodGood":"Tapas culture, Boqueria market, Catalan specialties (pa amb tomàquet, seafood, vermouth culture), strong scene in El Born, Gràcia, and Poble-sec.","foodBad":"Las Ramblas is a documented, named tourist trap — inflated prices, menu-switch scams, unordered \"table fees,\" and touristy paella that’s a \"far cry\" from the real thing. Good food requires knowing to avoid the main drag.","transitTier":"excellent","transitNote":"Modern metro + 230+ bus lines + night buses + trams, metro every 2–4 minutes at peak, student pass ~€20–40/month. No car needed — one of the most transit-friendly cities on this whole list.","costMin":4500,"costMax":7500,"safety":"watch","safetyNote":"Spain raised to Level 2 nationally (Aug 2026) — same as Granada/Bilbao/Pamplona. Barcelona specifically carries a long-standing, well-corroborated reputation as Spain’s pickpocket hotspot, concentrated on Las Ramblas and Metro Line 3. Catalonia independence politics remain a live local topic (2026 language-quota friction) but it’s simmering politics, not street violence — worth knowing about, not a safety concern.","program":"confirmed","programNote":"CIEE runs a full Barcelona lineup including a Liberal Arts Language Immersion / general Semester in Barcelona track that fits general electives without needing a business concentration; IES Abroad also runs standard programs there. Confirm which provider UTK already has an articulation agreement with for actual credit transfer.","sources":[["CIEE Barcelona programs","https://www.ciee.org/go-abroad/college-study-abroad/locations/spain/barcelona"],["Spanish Pyrenees fishing seasons","https://www.aardvarkmcleod.com/spanish-pyrenees-year-round-fishing/"],["Barcelona transit (TMB)","https://www.tmb.cat/en/home"]],"travel":95,"travelNote":"The best travel hub on this whole list — huge budget-airline presence (Vueling, Ryanair) plus high-speed AVE rail put most of Spain and Western Europe within cheap, easy reach. This is exactly the Granada strength, just bigger.","ski":60,"skiNote":"La Molina and Masella in the Pyrenees are ~2hrs away — a real, popular weekend option for Barcelona locals and students, not a stretch.","fishingQuery":"surf sea bass fly fishing Barcelona Catalonia","surfQuery":"Barceloneta Castelldefels Barcelona surfing","forumLinks":[["General living","What’s it like to live in Barcelona as an American?","https://www.quora.com/Whats-it-like-to-live-in-Barcelona-as-an-American"],["College life","What’s it like to study abroad in Barcelona?","https://www.quora.com/Whats-it-like-to-study-abroad-in-Barcelona?top_ans=9899959"],["Food scene","Best tapas in Barcelona?","https://www.quora.com/Where-can-I-find-the-best-tapas-in-Barcelona"]],"fishingType":"Surf/shore fly fishing (bass) — river trout is weak/cold"},
   {"id":"sansebastian","name":"San Sebastián, Spain (Basque)","hemi":"N","fit":45,"fitNote":"Same as Bilbao: river trout is April+, and saltwater fly for lubina is a real Spanish technique but I found no dedicated fly-guide presence specifically on this coast — one source explicitly calls it \"not ideal for saltwater fly fishing.\" Conventional spin/lure is the local norm.","surf":60,"surfNote":"Zurriola Beach — a real, notable urban surf beach right in the city, hosts pro contests. Best size/consistency is fall/winter, but conditions get smaller and more beginner-friendly heading into spring — a workable window across most of your stay.","nature":4,"natureShort":"Best food city per capita","natureNote":"Pintxos-bar scene considered one of the best food cities on Earth per capita, Pyrenees and coast both close.","college":3.5,"collegeShort":"Similar access, more touristy","collegeNote":"Similar exchange access to Bilbao, more tourist-facing social scene.","weatherShort":"44–57°F, damp coastal","weatherDetail":"Cool, cloudy, and damp through the window — coastal-mild but rarely warm before late spring.","foodShort":"World-class pintxos, but old town is a tourist trap","foodGood":"Elaborate, photogenic cold-display pintxos — genuinely one of the world’s great food cities.","foodBad":"Old town gets called a straight-up \"tourist trap\" by some visitors — overcrowding, inflated prices, sandwich-board menu tells.","transitTier":"good","transitNote":"DBus city buses with student discounts and some 24-hour routes; no metro/tram, but the historic core is compact and walkable in about 30 minutes.","costMin":6000,"costMax":10000,"safety":"watch","safetyNote":"Same Basque safety profile as Bilbao — Spain’s national Level 2 bump is the only real caveat.","program":"partial","programNote":"Same Deusto-adjacent access as Bilbao likely applies, but Bilbao is the better-documented path.","sources":[["San Sebastián vs Bilbao","https://www.thegeographicalcure.com/post/face-off-bilbao-vs-san-sebastian"],["San Sebastián cost of living","https://www.expatistan.com/cost-of-living/comparison/san-sebastian/bilbao"],["San Sebastián surf guide","https://thesurfatlas.com/surfing-spain/san-sebastian-surf/"]],"travel":78,"travelNote":"Same Basque/Spain hub advantage as Bilbao — smaller airport but easy train/bus into Bilbao or across the border into France.","ski":48,"skiNote":"Similar Pyrenees access to Bilbao, a bit further from the main resorts.","fishingQuery":"lubina sea bass fishing San Sebastian Basque coast","surfQuery":"Zurriola Beach San Sebastian surfing","forumLinks":[["General living","Living in San Sebastián (Donostia): activities and cost of living","https://www.quora.com/Can-you-describe-the-experience-of-living-in-San-Sebastian-Donostia-Spain-Are-there-many-activities-to-do-and-is-the-cost-of-living-affordable"],["College life","Nightlife in San Sebastián? (TripAdvisor forum)","https://www.tripadvisor.com/ShowTopic-g187457-i622-k7407967-Nightlife_in_San_Sebastian-Donostia_San_Sebastian_Province_of_Guipuzcoa_Basque_Country.html"],["General living","Why is San Sebastián one of the rainiest cities in Europe?","https://www.quora.com/Why-San-Sebastian-or-Donostia-Basque-Country-Spain-is-the-second-or-thirds-rainiest-city-in-Europe"]],"fishingType":"River (Apr+) — saltwater fly for bass is possible but unconfirmed locally"}
 ];
+
+// Brooks's manual drag-to-reorder sequence — empty until he drags something, then persisted
+// server-side by /api/study_abroad_save_order (same "sticks permanently" treatment as add/delete).
+const CUSTOM_ORDER = [];
 
 const COLUMN_DEFS = [
   {key:'fit', label:'Fishing Fit'},
@@ -504,6 +512,8 @@ function detailInnerHtml(d){
 const IS_LIVE_SITE = location.hostname === 'hermes-vps.tail2f597b.ts.net';
 
 let sortKey = 'match', sortDir = -1;
+let customOrder = [...CUSTOM_ORDER];
+let draggedId = null;
 let filterText = '';
 let hemiFilter = 'all';
 let confirmedOnly = false;
@@ -549,6 +559,12 @@ function render(){
   filtered.sort((a,b) => {
     let av, bv;
     switch(sortKey){
+      case 'custom': {
+        const ia = customOrder.indexOf(a.id), ib = customOrder.indexOf(b.id);
+        // ids not yet in the saved order (e.g. a location added after the last drag) sort after
+        // everything that's been manually placed, in their natural DATA order.
+        return (ia===-1 ? 1e9+DATA.indexOf(a) : ia) - (ib===-1 ? 1e9+DATA.indexOf(b) : ib);
+      }
       case 'name': return sortDir * a.name.localeCompare(b.name);
       case 'match': av=a.match; bv=b.match; break;
       case 'fit': av=a.fit; bv=b.fit; break;
@@ -573,12 +589,14 @@ function render(){
   tbody.innerHTML = '';
   filtered.forEach((d, i) => {
     const tr = document.createElement('tr');
-    tr.className = 'row';
+    const dragEnabled = IS_LIVE_SITE && sortKey === 'custom';
+    tr.className = 'row' + (dragEnabled ? ' draggable-row' : '');
     tr.dataset.id = d.id;
+    if (dragEnabled) tr.draggable = true;
     const open = allExpanded || expandedIds.has(d.id);
     const cellsHtml = {
       chk: `<td class="chk-cell" data-col="chk"><input type="checkbox" class="compare-check" data-id="${d.id}" ${selectedIds.has(d.id)?'checked':''}></td>`,
-      rank: `<td class="rank" data-col="rank">${i+1}</td>`,
+      rank: `<td class="rank" data-col="rank">${dragEnabled ? '<span class="drag-handle" title="Drag to reorder">⠿</span> ' : ''}${i+1}</td>`,
       name: `<td data-col="name"><span class="chev">${open ? '▾' : '▸'}</span><span class="locname">${d.name}</span><span class="hemi">${d.hemi === 'S' ? 'S. Hemisphere' : 'N. Hemisphere'}</span>${rankBadge(d.id)}${IS_LIVE_SITE ? `<button class="del-x" data-id="${d.id}" data-name="${d.name.replace(/"/g,'&quot;')}" title="Remove ${d.name} permanently">✕</button>` : ''}</td>`,
       match: `<td data-col="match">${fitBar(Math.round(d.match))}</td>`,
       fit: `<td data-col="fit">${linkToSource(fitBar(d.fit), d, 'fit')}${d.fishingType ? `<span class="short-phrase">${d.fishingType}</span>` : ''}</td>`,
@@ -698,15 +716,43 @@ function syncSortControls(){
   if (sel && [...sel.options].some(o=>o.value===sortKey)) sel.value = sortKey;
   const btn = document.getElementById('sortDirBtn');
   if (btn) {
-    // for cost, ascending (dir=1) means cheapest-first = "best first"; for everything else, descending (dir=-1) means best first
-    const isBestFirst = sortKey === 'cost' ? sortDir === 1 : sortDir === -1;
-    btn.textContent = isBestFirst ? '▼ Best first' : '▲ Worst first';
+    if (sortKey === 'custom') {
+      btn.textContent = '⠿ Drag rows below to reorder';
+      btn.disabled = true;
+    } else {
+      btn.disabled = false;
+      // for cost, ascending (dir=1) means cheapest-first = "best first"; for everything else, descending (dir=-1) means best first
+      const isBestFirst = sortKey === 'cost' ? sortDir === 1 : sortDir === -1;
+      btn.textContent = isBestFirst ? '▼ Best first' : '▲ Worst first';
+    }
   }
 }
 
 document.getElementById('sortKeySelect').addEventListener('change', (e) => {
+  const prevKey = sortKey;
   sortKey = e.target.value;
   sortDir = (sortKey === 'cost' || sortKey === 'name') ? 1 : -1;
+  if (sortKey === 'custom' && customOrder.length === 0) {
+    // seed the starting drag order from whatever was on screen a moment ago, rather than
+    // an arbitrary declaration order — sortKey is already 'custom' here so re-derive the
+    // prior order using prevKey/prevDir directly instead of recursing through render().
+    const rows = DATA.map(d => ({...d, match: matchScore(d), mid: (d.costMin+d.costMax)/2}));
+    sortKey = prevKey; // borrow the old comparator one last time
+    rows.sort((a,b) => {
+      let av, bv;
+      switch(prevKey){
+        case 'name': return sortDir * a.name.localeCompare(b.name);
+        case 'program': return sortDir * a.program.localeCompare(b.program);
+        case 'transit': av=transitScore(a.transitTier); bv=transitScore(b.transitTier); break;
+        case 'safety': av=safetyScore(a.safety); bv=safetyScore(b.safety); break;
+        case 'cost': av=a.mid; bv=b.mid; break;
+        default: av=a[prevKey]!==undefined?a[prevKey]:a.match; bv=b[prevKey]!==undefined?b[prevKey]:b.match;
+      }
+      return sortDir * (av - bv);
+    });
+    sortKey = 'custom';
+    customOrder = rows.map(d => d.id);
+  }
   syncSortControls();
   render();
 });
@@ -859,6 +905,60 @@ function attachRemoveHandlers(){
   });
 }
 
+
+if (IS_LIVE_SITE) {
+  const opt = document.createElement('option');
+  opt.value = 'custom';
+  opt.textContent = 'Custom (drag to reorder)';
+  document.getElementById('sortKeySelect').appendChild(opt);
+}
+
+async function saveCustomOrder(){
+  try {
+    const res = await fetch('/api/study_abroad_save_order', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({order: customOrder})
+    });
+    const json = await res.json();
+    if (!json.ok) console.error('order save failed:', json.error);
+  } catch (err) {
+    console.error('order save request failed:', err.message);
+  }
+}
+
+document.getElementById('tbody').addEventListener('dragstart', (e) => {
+  const tr = e.target.closest('tr.draggable-row');
+  if (!tr) return;
+  draggedId = tr.dataset.id;
+  e.dataTransfer.effectAllowed = 'move';
+  tr.classList.add('dragging');
+});
+document.getElementById('tbody').addEventListener('dragover', (e) => {
+  const tr = e.target.closest('tr.draggable-row');
+  if (!tr || !draggedId || tr.dataset.id === draggedId) return;
+  e.preventDefault();
+  document.querySelectorAll('.drag-over-target').forEach(el => el.classList.remove('drag-over-target'));
+  tr.classList.add('drag-over-target');
+});
+document.getElementById('tbody').addEventListener('dragend', () => {
+  document.querySelectorAll('.dragging, .drag-over-target').forEach(el => el.classList.remove('dragging', 'drag-over-target'));
+});
+document.getElementById('tbody').addEventListener('drop', (e) => {
+  const tr = e.target.closest('tr.draggable-row');
+  document.querySelectorAll('.dragging, .drag-over-target').forEach(el => el.classList.remove('dragging', 'drag-over-target'));
+  if (!tr || !draggedId || tr.dataset.id === draggedId) { draggedId = null; return; }
+  e.preventDefault();
+  // customOrder must contain every current id (so a drag right after a fresh add/delete still
+  // works) — seed any missing ones in natural DATA order before splicing.
+  DATA.forEach(d => { if (!customOrder.includes(d.id)) customOrder.push(d.id); });
+  const from = customOrder.indexOf(draggedId);
+  const to = customOrder.indexOf(tr.dataset.id);
+  customOrder.splice(from, 1);
+  customOrder.splice(to, 0, draggedId);
+  draggedId = null;
+  render();
+  saveCustomOrder();
+});
 
 syncSortControls();
 render();
