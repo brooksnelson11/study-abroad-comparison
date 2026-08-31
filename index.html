@@ -65,6 +65,12 @@
   button.themeToggle:hover, button.expandToggle:hover { background: var(--row-hover); }
   .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
 
+  .public-notice {
+    background: var(--surface-2); border: 1px solid var(--border); border-left: 3px solid var(--blue-450);
+    border-radius: 8px; padding: 11px 14px; margin: 12px 0; font-size: 12.5px;
+    color: var(--text-secondary); line-height: 1.55;
+  }
+  .public-notice strong { color: var(--text-primary); }
 
   .tabs { display: flex; gap: 6px; margin: 4px 0 16px; border-bottom: 1px solid var(--border); }
   .tab-btn {
@@ -243,6 +249,18 @@
       <button class="themeToggle" id="themeToggle">🌓 Toggle dark mode</button>
     </div>
   </header>
+
+  <!-- Shown only on the public copy (IS_LIVE_SITE false). Sits ABOVE the ask-box blocks on
+       purpose: the sync script strips from the first .ask-box through the tabs bar, so anything
+       placed below here would be stripped out of the public copy — which is the one copy that
+       actually needs this notice. -->
+  <div id="publicNotice" class="public-notice" style="display:none">
+    <strong>Public copy — the interactive tools aren't here.</strong>
+    The Q&amp;A chatbot, “add any location,” and per-row delete run on Brooks's private
+    server copy and are deliberately left out of this one, so nothing public can reach that
+    backend. <em>Everything else — all 18 locations, sorting, filtering, compare, drag-to-reorder
+    — works exactly the same here.</em>
+  </div>
 
   <div class="tabs">
     <button class="tab-btn active" data-tab="table">📋 Table</button>
@@ -527,6 +545,13 @@ function detailInnerHtml(d){
 // whenever loaded via any of the others. github.io (the public copy) is the only real host to
 // exclude, so match on the shared 'hermes-vps' prefix instead of one exact string.
 const IS_LIVE_SITE = location.hostname === 'hermes-vps' || location.hostname.startsWith('hermes-vps.');
+
+// The backend-only tools are absent from the public copy by design; say so there, so their
+// absence reads as intentional rather than as a broken/stale page.
+if (!IS_LIVE_SITE) {
+  const n = document.getElementById('publicNotice');
+  if (n) n.style.display = 'block';
+}
 
 let sortKey = 'match', sortDir = -1;
 let customOrder = [...CUSTOM_ORDER];
