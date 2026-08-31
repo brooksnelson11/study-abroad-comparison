@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Study Abroad Comparison — Brooks</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iIzJhNzhkNiIvPjxwYXRoIGQ9Ik02IDI0IEwyNyAxNiBMNiA4IEw2IDE0IEwyMCAxNiBMNiAxOCBaIiBmaWxsPSIjZmZmZmZmIi8+PC9zdmc+">
 <style>
   :root {
     color-scheme: light;
@@ -63,6 +64,7 @@
   }
   button.themeToggle:hover, button.expandToggle:hover { background: var(--row-hover); }
   .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
 
   .tabs { display: flex; gap: 6px; margin: 4px 0 16px; border-bottom: 1px solid var(--border); }
   .tab-btn {
@@ -224,6 +226,7 @@
     </div>
   </header>
 
+
   <div class="tabs">
     <button class="tab-btn active" data-tab="table">📋 Table</button>
     <button class="tab-btn" data-tab="compare">⚖️ Compare<span class="compare-badge hidden-row" id="compareBadge">0</span></button>
@@ -231,7 +234,7 @@
 
   <div class="view" id="view-table">
     <div class="methodology">
-      <b>Match Score</b> = equal-weighted average of Fishing Fit, Nature (×20), College Scene (×20), Cost (inverted, cheaper = higher), Safety (Good=100 / Watch=55 / Flag=15). <b>Surf Fit and Public Transit are separate columns, NOT folded into Match Score</b> — every column is independently sortable, click any header to re-rank by just that one thing. <b>Fishing Fit</b> and <b>Surf Fit</b> = % of your Jan–May window inside the real, sourced good season for that activity — scored separately since they often don't line up. Nature and College Scene are 1–5 judgment calls based on the research. Check the box on any row to add it to the <b>Compare</b> tab above.
+      <b>Match Score</b> = equal-weighted average of Fishing Fit, Nature (×20), College Scene (×20), Cost (inverted, cheaper = higher), Safety (Good=100 / Watch=55 / Flag=15). <b>Surf Fit, Travel Access, and Public Transit are separate columns, NOT folded into Match Score</b> — every column is independently sortable, click any header to re-rank by just that one thing. <b>Fishing Fit</b> and <b>Surf Fit</b> = % of your Jan–May window inside the real, sourced good season for that activity. <b>Travel Access</b> = how cheap/easy it is to reach OTHER interesting places from here (e.g. Granada's cheap Spain/Europe rail+flight access vs. New Zealand's isolation) — this is deliberately separate from local Transit, which only covers getting around the city itself. Nature, College Scene, and Travel Access are judgment calls based on the research, not sourced per-claim like Fishing/Surf Fit. Check the box on any row to add it to the <b>Compare</b> tab above.
     </div>
 
     <div class="col-toggles">
@@ -301,7 +304,10 @@ const DATA = [
     transitTier:'good', transitNote:'Orbus buses (Bee Card, 15–30 min frequency) cover the city; most students live within walking/cycling distance (~2km) of campus, so a car isn’t needed for daily life.',
     costMin:7000, costMax:7500, safety:'good', safetyNote:'Same national picture as Wellington — Level 1, very low crime, only earthquake/flood awareness.',
     program:'confirmed', programNote:'Real, confirmed Study Abroad program at University of Otago. Semester One starts Feb, slightly after a Jan arrival.',
-    sources:[['University of Otago — Study Abroad','https://www.otago.ac.nz/international/future-students/student-exchange-and-study-abroad'],['NZ trout season dates','https://www.fishing.net.nz/fishing-advice/general-articles/october-1st-trout-fishing-season-begins/'],['St Clair surf guide','https://www.surf-forecast.com/breaks/St-Clair']] },
+    sources:[['University of Otago — Study Abroad','https://www.otago.ac.nz/international/future-students/student-exchange-and-study-abroad'],['NZ trout season dates','https://www.fishing.net.nz/fishing-advice/general-articles/october-1st-trout-fishing-season-begins/'],['St Clair surf guide','https://www.surf-forecast.com/breaks/St-Clair']],
+    travel:15, travelNote:'This is New Zealand’s real weakness, not a nitpick — it’s one of the most isolated countries on Earth. Nearest other country is Australia, itself a ~3hr/$150-300+ flight away, and everywhere else (Asia, the Americas, Europe) is a genuine long-haul flight, not a cheap hop. Within NZ itself travel is easy (domestic flights, buses), but "see many countries in a semester" basically isn’t the trip this is.',
+    fishingQuery:'Mataura River New Zealand trout fishing', surfQuery:'St Clair Beach Dunedin surfing',
+    forumLinks:[['General living','What does it feel like to live in Dunedin, New Zealand?','https://www.quora.com/What-does-it-feel-like-to-live-in-Dunedin-New-Zealand'],['College life','What is it like at Otago University if you come from another place?','https://www.quora.com/What-is-it-like-at-Otago-University-if-you-come-from-another-place'],['College life','How good is the University of Otago?','https://www.quora.com/How-good-is-the-University-of-Otago'],['General living','What do people not like about living in Dunedin?','https://www.quora.com/What-do-people-not-like-about-living-in-Dunedin']] },
 
   { id:'zagreb', name:'Zagreb / Split, Croatia', hemi:'N', fit:90, fitNote:'Gacka River (trophy browns) open Mar 1–Oct 31 — miss only Jan–Feb.',
     surf:0, surfNote:'Essentially none, and it’s not worth dressing up — the Adriatic near Split is sheltered by Italy and typically glass-calm. Locals do windsurfing/kitesurfing at Brač (Zlatni Rat), not real surf breaks. Zagreb is fully inland.',
@@ -312,7 +318,10 @@ const DATA = [
     transitTier:'good', transitNote:'Zagreb has Croatia’s only tram network (15 day + 4 night lines) plus buses (~€13/month student pass); Split has ~20 bus lines at a flat €2/ride. Neither city requires a car.',
     costMin:4500, costMax:7000, safety:'good', safetyNote:'Level 1, low crime; Croatia declared officially landmine-free in 2026 (old 1990s-war concern now resolved).',
     program:'partial', programNote:'Real accredited university, but zero UTK precedent yet — "someone would have to go first."',
-    sources:[['Gacka River fly fishing','https://fishingbooker.com'],['ZSEM overview','https://www.zsem.hr'],['Zagreb transit guide','https://www.expatincroatia.com/zet-zagrebs-public-transportation-system/']] },
+    sources:[['Gacka River fly fishing','https://fishingbooker.com'],['ZSEM overview','https://www.zsem.hr'],['Zagreb transit guide','https://www.expatincroatia.com/zet-zagrebs-public-transportation-system/']],
+    travel:70, travelNote:'Real regional hub — Croatia sits on the Balkan/Adriatic coast with budget flights and ferries reaching Italy, Greece, Austria, and the rest of the Balkans cheaply; Split especially picks up in summer flight frequency.',
+    fishingQuery:'Gacka River Croatia fly fishing', surfQuery:null,
+    forumLinks:[['General living','What is it like to live in Zagreb, Croatia?','https://www.quora.com/What-is-it-like-to-live-in-Zagreb-Croatia'],['College life','What is the lifestyle like in Croatia (Zagreb)? What kind of people can one meet, how friendly are they?','https://www.quora.com/What-is-the-lifestyle-like-in-Croatia-Zagreb-What-kind-of-people-can-one-meet-there-and-how-friendly-are-they'],['General living','What are the pros and cons of living in Dubrovnik, Split and Zagreb?','https://www.quora.com/What-are-the-pros-and-cons-of-living-in-Dubrovnik-Split-and-Zagreb']] },
 
   { id:'tasmania', name:'Hobart, Tasmania', hemi:'S', fit:85, fitNote:'Highland lake trout runs Aug–end of April — covers virtually the whole window.',
     surf:65, surfNote:'Clifton Beach (~30 min from Hobart) is a real, solid local break fed by Southern Ocean swell. Autumn — especially March — and winter are the most consistent period, so the back half of your stay (Mar–May) is prime time for waves.',
@@ -323,7 +332,10 @@ const DATA = [
     transitTier:'good', transitNote:'Metro Tasmania buses — and Tasmania has waived public transit fares statewide through June 2027, with UTAS covering student costs on top. A car helps for reaching surf beaches but isn’t needed for campus life.',
     costMin:5300, costMax:8300, safety:'good', safetyNote:'No political concerns. Bushfire season Jan–Feb worth a one-line mention to a parent.',
     program:'confirmed', programNote:'Confirmed real exchange program at University of Tasmania.',
-    sources:[['UTAS Study Abroad','https://www.utas.edu.au/study/learning-abroad/inbound'],['Go Overseas — Tasmania','https://www.gooverseas.com/study-abroad/australia/program/229990'],['Clifton Beach surf guide','https://www.surf-forecast.com/breaks/Clifton-Beach']] },
+    sources:[['UTAS Study Abroad','https://www.utas.edu.au/study/learning-abroad/inbound'],['Go Overseas — Tasmania','https://www.gooverseas.com/study-abroad/australia/program/229990'],['Clifton Beach surf guide','https://www.surf-forecast.com/breaks/Clifton-Beach']],
+    travel:15, travelNote:'An island off an island — same core problem as New Zealand, worse. Even reaching mainland Australia isn’t cheap/frequent, and leaving Australia entirely is a long, expensive flight. Great if you want to explore Tasmania itself; bad if you want to hop countries.',
+    fishingQuery:'Tasmania Central Highlands trout lakes fishing', surfQuery:'Clifton Beach Tasmania surfing',
+    forumLinks:[['General living','What is it like living in Hobart, Tasmania?','https://www.quora.com/What-is-it-like-living-in-Hobart-Tasmania'],['General living','What is it like to live in Hobart, Tasmania? Are there any Americans living there?','https://www.quora.com/What-is-it-like-to-live-in-Hobart-Tasmania-Are-there-any-Americans-here-living-there'],['General living','Is Hobart worth visiting? Why?','https://www.quora.com/Is-Hobart-worth-visiting-Why']] },
 
   { id:'galway', name:'Galway, Ireland', hemi:'N', fit:65, fitNote:'Trout mid-Feb, salmon Jan–Sept — miss only the first ~6 weeks.',
     surf:60, surfNote:'Galway city itself only has a minor local beach — the real draws are Lahinch and Bundoran ("Ireland’s surf capital"), both 1+ hour away, so it’s a car/day-trip situation. Spring (Mar–May) is actually a solid, learner-friendly window; Jan–Feb can be huge/stormy (advanced only).',
@@ -334,7 +346,10 @@ const DATA = [
     transitTier:'limited', transitNote:'Two bus operators cover downtown/university with student discounts and the core is walkable, but there’s no rail/tram — reaching surf towns or venturing outside the center leans on a car or infrequent regional buses.',
     costMin:5200, costMax:6000, safety:'good', safetyNote:'Level 1, most crime categories fell further in 2026, stable politics.',
     program:'confirmed', programNote:'Fully confirmed and already listed directly on UTK’s own portal (CEA CAPA) — lowest-friction option to apply to.',
-    sources:[['University of Galway cost of living','https://www.universityofgalway.ie'],['Galway food scene','https://connachttribune.ie/galways-food-scene-must-be-protected/'],['Galway surf beaches','https://www.galwaytourism.ie/best-surfing-beaches-near-galway/']] },
+    sources:[['University of Galway cost of living','https://www.universityofgalway.ie'],['Galway food scene','https://connachttribune.ie/galways-food-scene-must-be-protected/'],['Galway surf beaches','https://www.galwaytourism.ie/best-surfing-beaches-near-galway/']] ,
+    travel:75, travelNote:'Ryanair/Aer Lingus out of Dublin (2.5hr bus/train away) put all of Europe within cheap reach; Galway itself has fewer direct international flights, so budget an extra connection through Dublin or Shannon.',
+    fishingQuery:'River Corrib Galway Ireland salmon trout fishing', surfQuery:'Lahinch Bundoran Ireland surfing',
+    forumLinks:[['College life','What is it like to attend the National University of Ireland in Galway?','https://www.quora.com/What-is-it-like-to-attend-the-National-University-of-Ireland-in-Galway'],['General living','What is it like to live in Galway?','https://www.quora.com/What-is-it-like-to-live-in-Galway'],['General living','Cost of living in Ireland for a student','https://www.quora.com/How-is-the-cost-of-living-in-Ireland-for-a-student']] },
 
   { id:'vancouver', name:'Vancouver, Canada (UBC)', hemi:'N', fit:90, fitNote:'Winter steelhead run Dec–Apr, peaking Jan–March — arrives right at peak season.',
     surf:70, surfNote:'No local surf in Vancouver proper — the real destination is Tofino on Vancouver Island, 5–6 hours away (drive + ferry), a legitimately world-class surf town. Timing is favorable: winter (esp. January) is most consistent, spring often brings good swells too — but it’s a weekend-trip situation, not local.',
@@ -345,7 +360,10 @@ const DATA = [
     transitTier:'excellent', transitNote:'UBC students get U-Pass BC for unlimited bus/SkyTrain/SeaBus across Metro Vancouver — no car needed for city or campus life.',
     costMin:6600, costMax:10300, safety:'good', safetyNote:'No instability. Downtown Eastside has a real, contained drug/crime problem — far from UBC’s Point Grey campus. City rated 4th-safest globally for solo travelers.',
     program:'confirmed', programNote:'Direct confirmed exchange through Sauder School of Business; academic calendar (Jan–Apr) matches almost exactly.',
-    sources:[['UBC exchange','https://you.ubc.ca/financial-planning/cost/'],['Vancouver steelhead season','https://troutandsteelhead.net/british-columbia-steelhead-fishing/'],['Tofino surf guide','https://www.pacificsands.com/blog/tofino-surfing-guide-seasons-and-beaches/']] },
+    sources:[['UBC exchange','https://you.ubc.ca/financial-planning/cost/'],['Vancouver steelhead season','https://troutandsteelhead.net/british-columbia-steelhead-fishing/'],['Tofino surf guide','https://www.pacificsands.com/blog/tofino-surfing-guide-seasons-and-beaches/']],
+    travel:50, travelNote:'A real Pacific hub, not a European-style cheap-hop city — strong direct long-haul routes to Asia (Tokyo, Seoul) and easy/cheap to the US West Coast, but "see many countries in a semester" means big flights, not €30 Ryanair fares.',
+    fishingQuery:'Fraser River British Columbia steelhead fishing', surfQuery:'Tofino Vancouver Island surfing',
+    forumLinks:[['College life','What is life like as an international student at UBC Vancouver?','https://www.quora.com/What-is-life-like-as-an-international-student-at-UBC-Vancouver-How-does-it-compare-to-Western-University-in-London-Ontario-Canada'],['Beginner fishing','Vancouver Island for a first timer?','https://www.flyfishbc.com/threads/vancouver-island-for-a-first-timer.7758/'],['General living','"regret moving to vancouver" (Blind)','https://www.teamblind.com/post/regret-moving-to-vancouver-wca7ehqs'],['General living','How heavy is the rain in Vancouver, really?','https://www.city-data.com/forum/vancouver/657296-how-heavy-rain-vancouver.html']] },
 
   { id:'bariloche', name:'Bariloche, Argentina', hemi:'S', fit:85, fitNote:'Trout season Nov 9–Apr 20/30 depending on water — covers ~90% of your window.',
     surf:0, surfNote:'No ocean surf — Bariloche sits on Lake Nahuel Huapi in the Andes, nowhere near a coast. Locals do lake windsurfing/kitesurfing (constant wind, safe shores), but that’s not surfing. Zero real surf case here.',
@@ -356,7 +374,10 @@ const DATA = [
     transitTier:'good', transitNote:'Mi Bus (SUBE card) covers downtown and reaches Cerro Catedral. Fine if housing is central; a car helps for freely exploring the wider Patagonia region.',
     costMin:6000, costMax:7500, safety:'good', safetyNote:'Very low crime, closer to a European mountain town than typical Latin-America risk profile. Real risk is trail/weather, not crime.',
     program:'thin', programNote:'No confirmed dedicated business-or-gen-ed semester program based IN Bariloche itself yet — needs a real PAO conversation.',
-    sources:[['Patagonia trout season dates','https://www.patagoniariverguides.com/about-us/patagonia-seasons/'],['Bariloche study abroad','https://www.studyabroad101.com/cities/argentina/bariloche'],['Bariloche transport guide','https://barilocheturismo.gob.ar/en/public-transportation']] },
+    sources:[['Patagonia trout season dates','https://www.patagoniariverguides.com/about-us/patagonia-seasons/'],['Bariloche study abroad','https://www.studyabroad101.com/cities/argentina/bariloche'],['Bariloche transport guide','https://barilocheturismo.gob.ar/en/public-transportation']],
+    travel:20, travelNote:'Remote Patagonia — regional flights within Argentina/Chile are workable, but leaving South America entirely is a long, expensive trip. Great for exploring the region around you, not for weekend-hopping other countries.',
+    fishingQuery:'Chimehuin Traful Correntoso rivers Patagonia fly fishing', surfQuery:null,
+    forumLinks:[['Beginner fishing','Patagonia Trip (Classic Fly Rod Forum)','https://classicflyrodforum.com/forum/viewtopic.php?t=142377'],['General living','Going to live in Bariloche...any advice?','https://baexpats.org/threads/going-to-live-in-bariloche-any-advice.10529/'],['General living','Cost-of-living reality check — a Big Mac cost 13,000 pesos','https://baexpats.org/threads/i-just-went-bariloche-and-a-big-mac-cost-me-13-000-pesos.49537/']] },
 
   { id:'wellington', name:'Wellington, NZ', hemi:'S', fit:95, fitNote:'Brown trout Oct 1–Apr 30 (nearly the whole window), rainbow through May 31.',
     surf:30, surfNote:'Lyall Bay — a real, locally famous beginner break right by the airport. Best season is winter (June), when south swells are strongest; summer is often flat, so Jan–Feb is weak and only March–May starts to pick up.',
@@ -367,7 +388,10 @@ const DATA = [
     transitTier:'good', transitNote:'Extensive network on paper — Metlink runs 5 rail lines, 100+ bus routes, a ferry, and the cable car, no car needed for coverage. But it has a real, well-documented reliability history: a botched 2018 bus network overhaul ("scathing review" at the time), a chronic driver shortage that peaked at 120 drivers short (20% of the workforce), and periodic cancellation waves with public apologies from the operator. The good news: Metlink’s own 2026 performance reports show real improvement — 99.5–99.7% of scheduled bus services actually delivered in Jan/Feb 2026, and complaints down year-over-year most months (though Jan 2026 complaints spiked 19.8% after a rough train-replacement-bus rollout). Read as "extensive and improving, not flawless," not "excellent."',
     costMin:7000, costMax:12000, safety:'good', safetyNote:'Level 1, among the world’s safest countries. Only real caveat is a seismic zone / natural-hazard one, not political.',
     program:'confirmed', programNote:'Confirmed UTK-listed program (ISA) with real coursework.',
-    sources:[['Victoria University of Wellington exchange','https://www.wgtn.ac.nz'],['NZ safety advisory','https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/new-zealand-travel-advisory.html'],['Lyall Bay surf guide','https://www.surf-forecast.com/breaks/Lyall-Bay'],['Metlink Feb 2026 performance report','https://www.metlink.org.nz/assets/Policies-and-reports/Performance-of-our-network/Performance-Reports/February-2026-Monthly-Report.pdf'],['RNZ — Metlink "shambles" commuter complaints','https://www.rnz.co.nz/news/alert-nat/583390/shambles-metlink-troubles-makes-return-to-work-even-more-sour-for-wellington-commuters']] },
+    sources:[['Victoria University of Wellington exchange','https://www.wgtn.ac.nz'],['NZ safety advisory','https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/new-zealand-travel-advisory.html'],['Lyall Bay surf guide','https://www.surf-forecast.com/breaks/Lyall-Bay'],['Metlink Feb 2026 performance report','https://www.metlink.org.nz/assets/Policies-and-reports/Performance-of-our-network/Performance-Reports/February-2026-Monthly-Report.pdf'],['RNZ — Metlink "shambles" commuter complaints','https://www.rnz.co.nz/news/alert-nat/583390/shambles-metlink-troubles-makes-return-to-work-even-more-sour-for-wellington-commuters']],
+    travel:15, travelNote:'Same isolation problem as Dunedin — this is New Zealand’s real structural weakness, not a nitpick. Australia is the only "nearby" country and it’s still a real flight; everywhere else is long-haul.',
+    fishingQuery:'Wellington region New Zealand trout fishing rivers', surfQuery:'Lyall Bay Wellington surfing',
+    forumLinks:[['General living','What is it like to live in Wellington, New Zealand?','https://www.quora.com/What-is-it-like-to-live-in-Wellington-New-Zealand'],['General living','Do you find Wellington as bad as people say it is?','https://www.quora.com/What-are-your-thoughts-on-living-in-Wellington-New-Zealand-Do-you-find-it-as-bad-as-people-say-it-is-What-are-some-advantages-and-disadvantages-of-living-there-in-comparison-to-other-cities-like-Auckland-or'],['General living','Positive sides to living in Wellington','https://www.quora.com/What-are-some-positive-sides-to-living-in-Wellington-New-Zealand']] },
 
   { id:'ljubljana', name:'Ljubljana, Slovenia', hemi:'N', fit:30, fitNote:'Soča River opens April 1 — only the last ~4–8 weeks of your stay are fishable.',
     surf:0, surfNote:'None. Slovenia’s tiny coastline near Piran is ~1.5 hours away and isn’t a surf destination — flat, sheltered Adriatic. Not worth stretching for.',
@@ -378,7 +402,10 @@ const DATA = [
     transitTier:'excellent', transitNote:'LPP city buses cover the metro area, a subsidized ~€20/month student pass, plus 300km of bike lanes — a car would be dead weight.',
     costMin:2750, costMax:5000, safety:'good', safetyNote:'Level 1 — the cleanest safety profile of every location researched. Only mild note is occasional protests near Parliament.',
     program:'partial', programNote:'No UTK precedent yet, but general-elective-only removes the main barrier — worth a fresh look.',
-    sources:[['Soča fishing season','https://www.patagoniariverguides.com'],['Ljubljana neo-bistro scene','https://www.lonelyplanet.com/articles/eating-local-with-style-the-rise-of-the-neo-bistro-in-ljubljana'],['Ljubljana transit','https://en.wikipedia.org/wiki/Ljubljana_Passenger_Transport']] },
+    sources:[['Soča fishing season','https://www.patagoniariverguides.com'],['Ljubljana neo-bistro scene','https://www.lonelyplanet.com/articles/eating-local-with-style-the-rise-of-the-neo-bistro-in-ljubljana'],['Ljubljana transit','https://en.wikipedia.org/wiki/Ljubljana_Passenger_Transport']],
+    travel:80, travelNote:'A genuine Central Europe crossroads — Italy, Austria, Croatia, and Hungary are all a short drive/train away, plus a real budget-flight hub for reaching the rest of Europe cheaply.',
+    fishingQuery:'Soca River Slovenia marble trout fly fishing', surfQuery:null,
+    forumLinks:[['College life','My Experience in Ljubljana, Slovenia (Erasmusu)','https://erasmusu.com/en/erasmus-ljubljana/erasmus-experiences/my-experience-in-ljubljana-slovenia-by-laura-425805'],['Beginner fishing','Chasing the rare wild marble trout in Slovenia','https://www.flyfishing.co.uk/threads/chasing-the-rare-wild-marbe-trout-in-slovenia.621309/'],['General living','Moving to Ljubljana (Expat.com forum)','https://www.expat.com/en/forum/europe/slovenia/1028014-moving-to-ljubljan.html']] },
 
   { id:'pamplona', name:'Pamplona / Pyrenees, Spain', hemi:'N', fit:90, fitNote:'Aragón/Navarra season runs Mar 1–Oct 31 — one of the best-timed windows of any Spanish option, miss only Jan–Feb.',
     surf:75, surfNote:'The Basque coast (Zurriola, Mundaka, Sopelana) is ~1 hour away — a real, internationally-known surf region, not a stretch. Prime window is Sept–April, so Jan–Apr of your semester lines up well; May is the weak tail as swells shrink into summer mush.',
@@ -389,7 +416,10 @@ const DATA = [
     transitTier:'good', transitNote:'TUC/Villavesa city buses (21 day + 9 night lines) plus regional buses; the historic center is very walkable, no car needed daily.',
     costMin:3500, costMax:6500, safety:'watch', safetyNote:'Spain raised to Level 2 nationally (Aug 2026) — not Pamplona-specific. The one real local risk (bull-goring incidents) is July, outside this semester.',
     program:'partial', programNote:'No confirmed provider or UTK path has turned up yet — "worth investigating," general electives make this easier now.',
-    sources:[['Fly fishing the Spanish Pyrenees','https://www.midcurrent.com'],['Spain travel advisory','https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/spain-travel-advisory.html'],['Basque coast surf guide','https://www.manawa.com/en/articles/top-10-spots-on-basque-country']] },
+    sources:[['Fly fishing the Spanish Pyrenees','https://www.midcurrent.com'],['Spain travel advisory','https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/spain-travel-advisory.html'],['Basque coast surf guide','https://www.manawa.com/en/articles/top-10-spots-on-basque-country']],
+    travel:78, travelNote:'This is the Granada strength applied here too — Spain’s RENFE trains and budget carriers (Vueling/Ryanair) make hopping to Madrid, Barcelona, France, or anywhere else in Europe cheap; smaller airport than Bilbao/Barcelona means occasionally connecting through one of those.',
+    fishingQuery:'Irati River Pyrenees Spain trout fishing', surfQuery:'Zurriola Mundaka Basque coast surfing',
+    forumLinks:[['College life','Erasmus experience in Pamplona, Spain (Erasmusu)','https://erasmusu.com/en/erasmus-pamplona/erasmus-experiences/erasmus-experience-in-pamplona-spain-by-mark-919243'],['Beginner fishing','Northern Spain trout fishing (Fly Fishing Forum)','https://www.flyfishing.co.uk/threads/northern-spain.280196/'],['Food scene','Eating in Pamplona (TripAdvisor forum)','https://www.tripadvisor.com/ShowTopic-g187520-i1021-k3903186-Eating_in_Pamplona-Pamplona_Navarra.html']] },
 
   { id:'grenoble', name:'Grenoble, France', hemi:'N', fit:40, fitNote:'Opens mid-March but Alpine snowmelt keeps rivers high/off-color into early summer — realistically only ~6–7 clean weeks.',
     surf:0, surfNote:'No real surfing, plainly — Grenoble is landlocked in the Alps, nearest coast is 400+ km away and the Mediterranean itself is a weak swell environment. This is a ski/mountain city, not a surf option at any time of year.',
@@ -400,7 +430,10 @@ const DATA = [
     transitTier:'excellent', transitNote:'5 tram lines + 47 bus lines, one nicknamed "the student tramway" runs straight to campus, 5am–1am service, strong walk/bike infrastructure too.',
     costMin:3800, costMax:5500, safety:'watch', safetyNote:'France sits at Level 2 for routine strikes/demonstrations — Grenoble itself isn’t a hotspot compared to Paris/Lyon/Marseille.',
     program:'partial', programNote:'Credit path likely direct via the same CEA provider UTK already uses for Galway.',
-    sources:[['Grenoble climate','https://www.climatestotravel.com/climate/france/grenoble'],['France travel advisory','https://travel.state.gov/en/international-travel/travel-advisories/france.html'],['Grenoble tram/transit','https://en.wikipedia.org/wiki/Grenoble_tramway']] },
+    sources:[['Grenoble climate','https://www.climatestotravel.com/climate/france/grenoble'],['France travel advisory','https://travel.state.gov/en/international-travel/travel-advisories/france.html'],['Grenoble tram/transit','https://en.wikipedia.org/wiki/Grenoble_tramway']],
+    travel:78, travelNote:'No major airport in Grenoble itself, but TGV high-speed rail plus nearby Lyon and Geneva airports put Italy, Switzerland, and the rest of France/Europe within cheap, easy reach.',
+    fishingQuery:'Isere River French Alps trout fishing', surfQuery:null,
+    forumLinks:[['College life','Student Life in Grenoble! (Erasmusu)','https://erasmusu.com/en/erasmus-grenoble/erasmus-experiences/student-life-in-grenoble-498200'],['Beginner fishing','Fly Fishing French Alps (Fly Fishing Forum)','https://www.flyfishing.co.uk/threads/fly-fishing-french-alps.9655/'],['General living','Is Grenoble a nice place to live?','https://www.quora.com/Is-Grenoble-France-a-nice-place-to-live']] },
 
   { id:'edinburgh', name:'Edinburgh, Scotland', hemi:'N', fit:70, fitNote:'Tay opens Jan 15, Spey opens Feb 11 — legally fishing from week 2–3 of the semester.',
     surf:45, surfNote:'Belhaven Bay (30–40 min, beginner-friendly) and Pease Bay (~90 min, more advanced) are real, established Scottish spots. Scottish surf overall peaks autumn/winter for the biggest swell, but Belhaven is workable year-round — solid access, just not peak conditions during your window.',
@@ -411,7 +444,10 @@ const DATA = [
     transitTier:'excellent', transitNote:'Lothian Buses (50+ routes) plus trams under one ticketing system, free for under-22 Scotland residents; Old Town/New Town is very walkable.',
     costMin:8000, costMax:11500, safety:'good', safetyNote:'UK-wide elevated terrorism threat level noted in 2026, but Scotland specifically shows lower threat levels than England; no current restrictions.',
     program:'partial', programNote:'API runs a full 15-credit semester at University of Edinburgh — real coursework, just needs one confirmation email since it’s not on UTK’s own portal yet.',
-    sources:[['River Tay opening day','https://www.google.com/search?q=river+tay+opening+day'],['Edinburgh cost of living','https://study.ed.ac.uk/undergraduate/fees-funding/living-costs'],['Surfing near Edinburgh','https://c2csurfschool.com/surfing-near-edinburgh-for-beginners/']] },
+    sources:[['River Tay opening day','https://www.google.com/search?q=river+tay+opening+day'],['Edinburgh cost of living','https://study.ed.ac.uk/undergraduate/fees-funding/living-costs'],['Surfing near Edinburgh','https://c2csurfschool.com/surfing-near-edinburgh-for-beginners/']],
+    travel:90, travelNote:'Major UK hub — huge budget-airline route map (easyJet, Ryanair) puts most of Europe within a cheap couple-hour flight, plus real rail access south into England.',
+    fishingQuery:'River Tay Spey Scotland salmon fishing', surfQuery:'Belhaven Bay Pease Bay Scotland surfing',
+    forumLinks:[['College life','What do you think of the University of Edinburgh?','https://www.quora.com/What-do-you-think-of-the-University-of-Edinburgh-Academics-student-life-social-scene-international-reputation-personal-experience-etc'],['Beginner fishing','Beginner fly fishing Scottish highlands (forum)','https://www.flyfishing.co.uk/threads/beginner-fly-fishing-scottish-highlands.644697/'],['General living','Is the weather in Edinburgh really as depressing as people say?','https://www.quora.com/Is-the-weather-in-Edinburgh-really-as-depressing-as-people-say']] },
 
   { id:'granada', name:'Granada, Spain', hemi:'N', fit:10, fitNote:'Andalusia trout season opens May 1 — the entire Jan–Apr stretch is closed season, maybe the first week of May if the program runs that late.',
     surf:8, surfNote:'Honestly, no real surf scene here — Granada is inland; the nearest coast (Costa Tropical) is 45–65 minutes away and is small, wind-dependent Mediterranean surf, more of a local novelty than a destination.',
@@ -422,7 +458,10 @@ const DATA = [
     transitTier:'excellent', transitNote:'Small, walkable center plus a cheap student bus card (Credibus Universitario) and a single metro line — a car is explicitly unnecessary.',
     costMin:3500, costMax:5500, safety:'watch', safetyNote:'Spain raised to Level 2 nationally (Aug 2026, terrorism/civil unrest) — not Granada-specific, but current and real.',
     program:'confirmed', programNote:'Already on your own shortlist — real, established program.',
-    sources:[['Andalucía fishing seasons','https://www.andalucia.com'],['Granada tapas controversy','https://www.thelocal.es/20220412/granada-mayor-causes-shock-by-calling-for-end-of-free-tapas'],['Granada transport for students','https://studentexperience.com/public-transport-in-granada']] },
+    sources:[['Andalucía fishing seasons','https://www.andalucia.com'],['Granada tapas controversy','https://www.thelocal.es/20220412/granada-mayor-causes-shock-by-calling-for-end-of-free-tapas'],['Granada transport for students','https://studentexperience.com/public-transport-in-granada']],
+    travel:85, travelNote:'The exact strength you flagged — cheap RENFE trains and buses to Madrid/Seville/Málaga plus a real regional airport make hopping around Spain and Europe genuinely easy and cheap, unlike NZ.',
+    fishingQuery:null, surfQuery:null,
+    forumLinks:[['College life','What is life like in Spain (Granada) for an Erasmus student?','https://www.quora.com/What-is-life-like-in-Spain-specifically-Granada-for-an-Erasmus-student'],['College life','Experience in Granada, Spain (Erasmusu)','https://erasmusu.com/en/erasmus-granada/erasmus-experiences/experience-in-granada-spain-by-karolina-285958'],['Food scene','Why are tapas free in Granada? (TripAdvisor forum)','https://www.tripadvisor.com/ShowTopic-g187427-i42-k9709434-Why_are_tapas_free_in_Granada-Spain.html']] },
 
   { id:'valdivia', name:'Valdivia / Pucón, Chile', hemi:'S', fit:85, fitNote:'National season runs mid-Nov to ~May 6 in Patagonia-adjacent regions — covers nearly all of your window.',
     surf:20, surfNote:'Real but low-key — Curiñanco and the Mehuín area have known breaks, "known to Chilean surfers" rather than internationally famous. Biggest swells hit in southern winter (May–Aug); summer (Jan–Mar) is the weakest, least consistent period, with only May starting to turn on.',
@@ -433,7 +472,10 @@ const DATA = [
     transitTier:'carneeded', transitNote:'No real urban rapid-transit system in either town; inter-city buses connect Valdivia and Pucón, but day-to-day and reaching surf beaches (like Curiñanco) is much easier with a car.',
     costMin:5500, costMax:6000, safety:'flag', safetyNote:'Real, current concern: active Mapuche land-rights conflict in the adjacent Araucanía region, with a State of Emergency in southern Chile in effect since 2022. Not the epicenter, but close enough to name to a parent.',
     program:'thin', programNote:'Needs real legwork to confirm a UTK-reachable enrollment path exists.',
-    sources:[['Chile Patagonia fishing season','https://www.patagonialine.com/season/'],['Chile safety/OSAC report','https://www.osac.gov/Content/Report/ad86f789-a271-4837-a479-266aa61ce9d0'],['Southern Chile surf guide','https://www.stormrider.surf/region/southern-chile']] },
+    sources:[['Chile Patagonia fishing season','https://www.patagonialine.com/season/'],['Chile safety/OSAC report','https://www.osac.gov/Content/Report/ad86f789-a271-4837-a479-266aa61ce9d0'],['Southern Chile surf guide','https://www.stormrider.surf/region/southern-chile']],
+    travel:22, travelNote:'Remote southern Chile — regional hops within Chile/Argentina work, but leaving South America is a long trip. Similar isolation problem to Bariloche, just across the border.',
+    fishingQuery:'Curinanco Mehuin Chile trout fishing', surfQuery:'Curinanco Chile surfing',
+    forumLinks:[['College life','Universidad Austral de Chile student life reviews (iAgora)','https://www.iagora.com/studies/uni/Universidad_Austral_de_Chile::show=reviews:type=life'],['Beginner fishing','Fishing in Pucón or Puerto Varas (TripAdvisor forum)','https://www.tripadvisor.com/ShowTopic-g294291-i1357-k6712065-Fishing_in_Pucon_or_Puerto_Varas_or_somewhere_in_the_Lakes-Chile.html'],['General living','Is the cost of living in Valdivia high?','https://www.expatexchange.com/gdcview/363/1/30/8338/Chile/Valdivia/Is-the-cost-of-living-in-Valdivia-high']] },
 
   { id:'bilbao', name:'Bilbao, Spain (Basque)', hemi:'N', fit:35, fitNote:'General season opens the first week of April, some catch-and-release water from mid-March — only ~5–8 usable weeks.',
     surf:55, surfNote:'Mundaka — genuinely internationally famous, one of the best left-hand river-mouth waves in the world, 30–35 minutes away (Sopelana is closer for beginners). Peaks autumn/winter (Sep–Feb, best around January) and "almost never works in summer" — a Jan–Feb stay catches it well, fading by spring.',
@@ -444,7 +486,10 @@ const DATA = [
     transitTier:'excellent', transitNote:'Metro Bilbao + Tranbia tram + city buses, all on one Barik card; Casco Viejo/Ensanche is very walkable — a car isn’t needed in the city.',
     costMin:4000, costMax:6000, safety:'watch', safetyNote:'Basque Country is "exceptionally safe" (ETA disbanded 2018) — Spain’s national Level 2 bump is the only real caveat.',
     program:'confirmed', programNote:'University of Deusto runs a real exchange with English-taught coursework, well-worn enough that Michigan Ross and UT Austin both use the same partnership.',
-    sources:[['Bilbao pintxos guide','https://doeatbetterexperience.com/blog/pintxos-bilbao-guide/'],['Deusto exchange','https://www.deusto.es'],['Mundaka surf guide','https://en.wikipedia.org/wiki/Mundaka_wave']] },
+    sources:[['Bilbao pintxos guide','https://doeatbetterexperience.com/blog/pintxos-bilbao-guide/'],['Deusto exchange','https://www.deusto.es'],['Mundaka surf guide','https://en.wikipedia.org/wiki/Mundaka_wave']],
+    travel:82, travelNote:'Real airport with budget routes across Europe plus RENFE/bus access to the rest of Spain and across the French border — same Spain-hub advantage Granada has.',
+    fishingQuery:null, surfQuery:'Mundaka Spain surfing',
+    forumLinks:[['College life','My Erasmus Experience in Bilbao','https://erasmusu.com/en/erasmus-bilbao/erasmus-experiences/my-erasmus-experience-in-bilbao-976167'],['Beginner fishing','Fly fishing on the Bidasoa River (TripAdvisor forum)','https://www.tripadvisor.com/ShowTopic-g187454-i517-k10331206-Fly_fishing_on_the_Bidasoa_River-Bilbao_Province_of_Vizcaya_Basque_Country.html'],['Food scene','Best pintxos in centrally located places? (TripAdvisor forum)','https://www.tripadvisor.com/ShowTopic-g187454-i517-k15480767-Best_pintxos_in_which_centrally_located_places_please-Bilbao_Province_of_Vizcaya_Basque_Cou.html']] },
 
   { id:'sansebastian', name:'San Sebastián, Spain (Basque)', hemi:'N', fit:35, fitNote:'Same Basque season as Bilbao — general season opens first week of April, ~5–8 usable weeks.',
     surf:60, surfNote:'Zurriola Beach — a real, notable urban surf beach right in the city, hosts pro contests. Best size/consistency is fall/winter, but conditions get smaller and more beginner-friendly heading into spring — a workable window across most of your stay.',
@@ -455,7 +500,10 @@ const DATA = [
     transitTier:'good', transitNote:'DBus city buses with student discounts and some 24-hour routes; no metro/tram, but the historic core is compact and walkable in about 30 minutes.',
     costMin:6000, costMax:10000, safety:'watch', safetyNote:'Same Basque safety profile as Bilbao — Spain’s national Level 2 bump is the only real caveat.',
     program:'partial', programNote:'Same Deusto-adjacent access as Bilbao likely applies, but Bilbao is the better-documented path.',
-    sources:[['San Sebastián vs Bilbao','https://www.thegeographicalcure.com/post/face-off-bilbao-vs-san-sebastian'],['San Sebastián cost of living','https://www.expatistan.com/cost-of-living/comparison/san-sebastian/bilbao'],['San Sebastián surf guide','https://thesurfatlas.com/surfing-spain/san-sebastian-surf/']] },
+    sources:[['San Sebastián vs Bilbao','https://www.thegeographicalcure.com/post/face-off-bilbao-vs-san-sebastian'],['San Sebastián cost of living','https://www.expatistan.com/cost-of-living/comparison/san-sebastian/bilbao'],['San Sebastián surf guide','https://thesurfatlas.com/surfing-spain/san-sebastian-surf/']],
+    travel:78, travelNote:'Same Basque/Spain hub advantage as Bilbao — smaller airport but easy train/bus into Bilbao or across the border into France.',
+    fishingQuery:null, surfQuery:'Zurriola Beach San Sebastian surfing',
+    forumLinks:[['General living','Living in San Sebastián (Donostia): activities and cost of living','https://www.quora.com/Can-you-describe-the-experience-of-living-in-San-Sebastian-Donostia-Spain-Are-there-many-activities-to-do-and-is-the-cost-of-living-affordable'],['College life','Nightlife in San Sebastián? (TripAdvisor forum)','https://www.tripadvisor.com/ShowTopic-g187457-i622-k7407967-Nightlife_in_San_Sebastian-Donostia_San_Sebastian_Province_of_Guipuzcoa_Basque_Country.html'],['General living','Why is San Sebastián one of the rainiest cities in Europe?','https://www.quora.com/Why-San-Sebastian-or-Donostia-Basque-Country-Spain-is-the-second-or-thirds-rainiest-city-in-Europe']] },
 
   { id:'capetown', name:'Cape Town, South Africa', hemi:'S', fit:5, fitNote:'Western Cape trout runs May–Sept (their winter) — the exact opposite of Jan–May. Closed season your entire stay.',
     surf:55, surfNote:'Muizenberg (beginner-friendly) and Kalk Bay/Atlantic-side breaks are real and internationally known — Cape Town is a legitimate global surf city. Winter (May–Aug) has the biggest swell and summer (Jan–Feb) is the weakest, choppiest stretch, but March–May is called out as a genuine "sweet spot" — warm water, dying wind, consistent swell.',
@@ -466,7 +514,10 @@ const DATA = [
     transitTier:'good', transitNote:'MyCiTi bus-rapid-transit covers the city bowl and southern suburbs with student discounts; UCT bars first-years from bringing cars, but many students supplement with Uber after dark.',
     costMin:2200, costMax:3600, safety:'flag', safetyNote:'The biggest safety flag on this whole list — Level 2, composite safety score 39/100, opportunistic crime (pickpocketing/phone theft) is the top risk, some reports of rising violent crime. Standard guidance there is "never walk at night."',
     program:'confirmed', programNote:'Real, well-established program — CIEE + direct enroll at UCT.',
-    sources:[['Cape Town fly fishing (saltwater fallback)','https://fishingbooker.com/blog/cape-town-fishing/'],['Cape Town safety rating','https://ismytripsafe.com/south-africa/cape-town'],['Muizenberg surf guide','https://www.surf-forecast.com/breaks/Muizenberg']] },
+    sources:[['Cape Town fly fishing (saltwater fallback)','https://fishingbooker.com/blog/cape-town-fishing/'],['Cape Town safety rating','https://ismytripsafe.com/south-africa/cape-town'],['Muizenberg surf guide','https://www.surf-forecast.com/breaks/Muizenberg']],
+    travel:35, travelNote:'Decent regional African connectivity (budget carriers to other African countries), but leaving the continent is a genuine long-haul flight — not a cheap-hop hub like Spain.',
+    fishingQuery:null, surfQuery:'Muizenberg Kalk Bay Cape Town surfing',
+    forumLinks:[['General living','Is it safe to live in Cape Town as an expat?','https://www.quora.com/Is-it-safe-to-live-in-Cape-Town-South-Africa-as-an-expat-or-immigrant'],['College life','Safety concerns for international students in Cape Town','https://www.quora.com/What-are-the-safety-concerns-for-international-students-in-Cape-Town'],['Beginner surfing','Is Muizenberg a surfer’s haven?','https://www.quora.com/Is-Muizenberg-a-Surfer%E2%80%99s-Haven'],['Food scene','Good things and places to eat in Cape Town','https://www.quora.com/What-are-some-good-things-and-places-to-eat-in-Cape-Town']] },
 
   { id:'florence', name:'Florence, Italy', hemi:'N', fit:66, fitNote:'Tuscany’s trout season opens Feb 22 (Regione Toscana official date), closing early October — you lose January and three weeks of February, but March–May is fully fishable in real water: the Casentino valley (~1hr away, locally billed as "Italy’s capital of sportfishing") and Mugello no-kill zones. ~66% of your window falls in season.',
     surf:15, surfNote:'Marina di Pietrasanta on the Versilia coast, 1.5–2 hrs away — windswell-dominated, 0.4–0.5m waves, beginner/longboard only, and "never gets crowded" precisely because it doesn’t draw real surfers. Fall/winter (the start of your window) is relatively the better half of a weak year — this is not a real surf destination.',
@@ -477,7 +528,10 @@ const DATA = [
     transitTier:'excellent', transitNote:'Historic center is walkable corner-to-corner in ~25 minutes; a car is explicitly discouraged (restricted ZTL zone, expensive parking mistakes). Real ATAF/Autolinee Toscane buses plus an expanding tram network (3 lines active) reach the outer neighborhoods and airport.',
     costMin:4500, costMax:8000, safety:'good', safetyNote:'No elevated advisory for Italy or Florence specifically. The real, documented risk is pickpocketing/scams in dense tourist zones (Ponte Vecchio, San Lorenzo Market, near the Duomo, bus lines 7/10) — tourists report 3–4 scam attempts/day in high-traffic areas, though March 2026 theft reports were actually down 12% year-over-year.',
     program:'confirmed', programNote:'Two independently confirmed, well-established direct paths: LdM (Lorenzo de’ Medici Institute, a Marist University branch campus since 2006, 2,500+ students/year, general-electives/liberal-arts heavy) and Syracuse Florence. More redundant program pathways than almost anywhere else on this list — low risk on "can I actually get there."',
-    sources:[['Tuscany 2026 trout season dates','https://www.regione.toscana.it/-/apertura-pesca-alla-trota-2026'],['LdM Institute','https://ldminstitute.com/'],['Florence bus/tram guide','https://www.florencetourism.org/florence-bus-tram-guide/']] },
+    sources:[['Tuscany 2026 trout season dates','https://www.regione.toscana.it/-/apertura-pesca-alla-trota-2026'],['LdM Institute','https://ldminstitute.com/'],['Florence bus/tram guide','https://www.florencetourism.org/florence-bus-tram-guide/']],
+    travel:90, travelNote:'One of the best in Europe — Italy’s train network puts Rome, Venice, and Milan an easy day trip away, plus a real regional airport with budget routes across the rest of Europe.',
+    fishingQuery:'Casentino Valley Arno Tuscany trout fishing', surfQuery:'Marina di Pietrasanta Versilia surfing',
+    forumLinks:[['General living','What is it like living in Florence?','https://www.quora.com/What-is-it-like-living-in-Florence'],['General living','Is it expensive to live in Florence?','https://www.quora.com/Is-it-expensive-to-live-in-Florence'],['Food scene','Insider tips and avoiding tourist traps (TripAdvisor forum)','https://www.tripadvisor.com/ShowTopic-g187895-i68-k4608266-Insider_tips_and_avoiding_tourist_traps_PLEASE-Florence_Tuscany.html']] },
 
   { id:'barcelona', name:'Barcelona, Spain', hemi:'N', fit:30, fitNote:'Catalan Pyrenees: low-altitude zones open Mar 18–Oct 20 (overlapping ~75 of your 151 days), high-altitude zones and the Aran Valley don’t open until May 1 or later. Real overlap exists, but it’s the coldest, weakest part of the season (spring runoff, cold water) — confirm exact current-year dates via the Generalitat de Catalunya before finalizing, outfitter sites drift year to year.',
     surf:35, surfNote:'Real local spots right in the city (Barceloneta, Masnou, Montgat, Castelldefels) — wind-driven chop, not real groundswell, nothing like the Basque coast. Best window is Oct–March, which overlaps the front half of your semester; call it a casual longboard/bodyboard scene, not a real surf culture.',
@@ -488,12 +542,16 @@ const DATA = [
     transitTier:'excellent', transitNote:'Modern metro + 230+ bus lines + night buses + trams, metro every 2–4 minutes at peak, student pass ~€20–40/month. No car needed — one of the most transit-friendly cities on this whole list.',
     costMin:4500, costMax:7500, safety:'watch', safetyNote:'Spain raised to Level 2 nationally (Aug 2026) — same as Granada/Bilbao/Pamplona. Barcelona specifically carries a long-standing, well-corroborated reputation as Spain’s pickpocket hotspot, concentrated on Las Ramblas and Metro Line 3. Catalonia independence politics remain a live local topic (2026 language-quota friction) but it’s simmering politics, not street violence — worth knowing about, not a safety concern.',
     program:'confirmed', programNote:'CIEE runs a full Barcelona lineup including a Liberal Arts Language Immersion / general Semester in Barcelona track that fits general electives without needing a business concentration; IES Abroad also runs standard programs there. Confirm which provider UTK already has an articulation agreement with for actual credit transfer.',
-    sources:[['CIEE Barcelona programs','https://www.ciee.org/go-abroad/college-study-abroad/locations/spain/barcelona'],['Spanish Pyrenees fishing seasons','https://www.aardvarkmcleod.com/spanish-pyrenees-year-round-fishing/'],['Barcelona transit (TMB)','https://www.tmb.cat/en/home']] },
+    sources:[['CIEE Barcelona programs','https://www.ciee.org/go-abroad/college-study-abroad/locations/spain/barcelona'],['Spanish Pyrenees fishing seasons','https://www.aardvarkmcleod.com/spanish-pyrenees-year-round-fishing/'],['Barcelona transit (TMB)','https://www.tmb.cat/en/home']],
+    travel:95, travelNote:'The best travel hub on this whole list — huge budget-airline presence (Vueling, Ryanair) plus high-speed AVE rail put most of Spain and Western Europe within cheap, easy reach. This is exactly the Granada strength, just bigger.',
+    fishingQuery:'Catalan Pyrenees Spain trout fishing', surfQuery:'Barceloneta Castelldefels Barcelona surfing',
+    forumLinks:[['General living','What’s it like to live in Barcelona as an American?','https://www.quora.com/Whats-it-like-to-live-in-Barcelona-as-an-American'],['College life','What’s it like to study abroad in Barcelona?','https://www.quora.com/Whats-it-like-to-study-abroad-in-Barcelona?top_ans=9899959'],['Food scene','Best tapas in Barcelona?','https://www.quora.com/Where-can-I-find-the-best-tapas-in-Barcelona']] },
 ];
 
 const COLUMN_DEFS = [
   {key:'fit', label:'Fishing Fit'},
   {key:'surf', label:'Surf Fit'},
+  {key:'travel', label:'Travel Access'},
   {key:'nature', label:'Nature'},
   {key:'college', label:'College Scene'},
   {key:'weather', label:'Weather Jan–May'},
@@ -616,6 +674,34 @@ function photoLinksHtml(d){
   const commons = `https://commons.wikimedia.org/w/index.php?search=${q}&title=Special:MediaSearch`;
   return `<a class="src-link" href="${imgSearch}" target="_blank" rel="noopener">📷 Google Images</a><a class="src-link" href="${wikiSearch}" target="_blank" rel="noopener">📷 Wikipedia</a><a class="src-link" href="${commons}" target="_blank" rel="noopener">📷 Wikimedia Commons</a>`;
 }
+function spotLinksHtml(query, emoji){
+  if (!query) return '';
+  const q = encodeURIComponent(query);
+  const img = `https://www.google.com/search?tbm=isch&q=${q}`;
+  const articles = `https://www.google.com/search?q=${q}`;
+  return `<a class="src-link" href="${img}" target="_blank" rel="noopener">${emoji} Photos of ${query}</a><a class="src-link" href="${articles}" target="_blank" rel="noopener">📰 Articles/reports on ${query}</a>`;
+}
+function natureLinksHtml(d){
+  const q = encodeURIComponent(d.name.replace(/\(.*?\)/g,'').trim() + ' nature landscape scenery');
+  return `<a class="src-link" href="https://www.google.com/search?tbm=isch&q=${q}" target="_blank" rel="noopener">📷 Photos of the nature/scenery here</a>`;
+}
+function forumSection(topic){
+  const t = (topic||'').toLowerCase();
+  if (t.includes('fish')) return 'fit';
+  if (t.includes('surf')) return 'surf';
+  if (t.includes('college') || t.includes('social')) return 'college';
+  if (t.includes('food')) return 'food';
+  return 'other';
+}
+function forumLinksFor(d, sectionKey){
+  return (d.forumLinks||[]).filter(f => forumSection(f[0]) === sectionKey)
+    .map(f=>`<a class="src-link" href="${f[2]}" target="_blank" rel="noopener">💬 ${f[1]}</a>`).join('');
+}
+function otherForumLinksHtml(d){
+  const leftover = (d.forumLinks||[]).filter(f => forumSection(f[0]) === 'other');
+  if (!leftover.length) return '';
+  return `<div class="detail-col"><h4>More real perspectives</h4><div class="more-sources">${leftover.map(f=>`<a class="src-link" href="${f[2]}" target="_blank" rel="noopener">💬 ${f[1]}</a>`).join('')}</div></div>`;
+}
 function moreSourcesHtml(d){
   const usedUrls = new Set();
   Object.keys(CATEGORY_KEYWORDS).forEach(k=>matchedSources(d,k).forEach(s=>usedUrls.add(s[1])));
@@ -626,16 +712,18 @@ function moreSourcesHtml(d){
 function detailInnerHtml(d){
   return `
     <div class="detail-col"><h4>Photos</h4><p>Real, live photo searches for ${d.name} — not curated by me, so they'll always be current:</p>${photoLinksHtml(d)}</div>
-    <div class="detail-col"><h4>Fishing Fit — ${d.fit}%</h4>${bulletsHtml(d.fitNote)}${sourceLinksFor(d,'fit')}</div>
-    <div class="detail-col"><h4>Surf Fit — ${d.surf > 0 ? d.surf + '%' : 'No real option'}</h4>${bulletsHtml(d.surfNote)}${sourceLinksFor(d,'surf')}</div>
-    <div class="detail-col"><h4>Nature</h4>${bulletsHtml(d.natureNote)}</div>
-    <div class="detail-col"><h4>College &amp; Social Scene</h4>${bulletsHtml(d.collegeNote)}</div>
+    <div class="detail-col"><h4>Fishing Fit — ${d.fit}%</h4>${bulletsHtml(d.fitNote)}${sourceLinksFor(d,'fit')}${spotLinksHtml(d.fishingQuery,'📷')}${forumLinksFor(d,'fit')}</div>
+    <div class="detail-col"><h4>Surf Fit — ${d.surf > 0 ? d.surf + '%' : 'No real option'}</h4>${bulletsHtml(d.surfNote)}${sourceLinksFor(d,'surf')}${spotLinksHtml(d.surfQuery,'📷')}${forumLinksFor(d,'surf')}</div>
+    <div class="detail-col"><h4>Travel Access — ${d.travel}%</h4><p>How cheap/easy it is to reach OTHER interesting places from here — separate from local Transit above.</p>${bulletsHtml(d.travelNote)}</div>
+    <div class="detail-col"><h4>Nature</h4>${bulletsHtml(d.natureNote)}${natureLinksHtml(d)}</div>
+    <div class="detail-col"><h4>College &amp; Social Scene</h4>${bulletsHtml(d.collegeNote)}${forumLinksFor(d,'college')}</div>
     <div class="detail-col"><h4>Weather Jan–May</h4>${bulletsHtml(d.weatherDetail)}${sourceLinksFor(d,'weather')}</div>
-    <div class="detail-col"><h4>Food</h4>${foodHtml(d.foodGood,d.foodBad)}${sourceLinksFor(d,'food')}</div>
+    <div class="detail-col"><h4>Food</h4>${foodHtml(d.foodGood,d.foodBad)}${sourceLinksFor(d,'food')}${forumLinksFor(d,'food')}</div>
     <div class="detail-col"><h4>Public Transit</h4>${bulletsHtml(d.transitNote)}${sourceLinksFor(d,'transit')}</div>
     <div class="detail-col"><h4>Cost of Living</h4><p>$${d.costMin.toLocaleString()}–$${d.costMax.toLocaleString()} for a 4–5 month semester (living costs only, excl. tuition/flights).</p>${sourceLinksFor(d,'cost')}</div>
     <div class="detail-col"><h4>Safety</h4>${bulletsHtml(d.safetyNote)}${sourceLinksFor(d,'safety')}</div>
     <div class="detail-col"><h4>Program Status</h4>${bulletsHtml(d.programNote)}${sourceLinksFor(d,'program')}</div>
+    ${otherForumLinksHtml(d)}
     ${moreSourcesHtml(d)}
   `;
 }
@@ -677,7 +765,7 @@ function render(){
     if (hideFlagged && r.safety === 'flag') return false;
     if (realSurfOnly && r.surf < 15) return false;
     if (filterText) {
-      const hay = (r.name+' '+r.fitNote+' '+r.surfNote+' '+r.natureNote+' '+r.collegeNote+' '+r.foodGood+' '+r.foodBad+' '+r.transitNote+' '+r.safetyNote+' '+r.programNote).toLowerCase();
+      const hay = (r.name+' '+r.fitNote+' '+r.surfNote+' '+r.travelNote+' '+r.natureNote+' '+r.collegeNote+' '+r.foodGood+' '+r.foodBad+' '+r.transitNote+' '+r.safetyNote+' '+r.programNote).toLowerCase();
       if (!hay.includes(filterText.toLowerCase())) return false;
     }
     return true;
@@ -690,6 +778,7 @@ function render(){
       case 'match': av=a.match; bv=b.match; break;
       case 'fit': av=a.fit; bv=b.fit; break;
       case 'surf': av=a.surf; bv=b.surf; break;
+      case 'travel': av=a.travel; bv=b.travel; break;
       case 'nature': av=a.nature; bv=b.nature; break;
       case 'college': av=a.college; bv=b.college; break;
       case 'cost': av=a.mid; bv=b.mid; break;
@@ -718,6 +807,7 @@ function render(){
       match: `<td data-col="match">${fitBar(Math.round(d.match))}</td>`,
       fit: `<td data-col="fit">${linkToSource(fitBar(d.fit), d, 'fit')}</td>`,
       surf: `<td data-col="surf">${d.surf > 0 ? linkToSource(fitBar(d.surf), d, 'surf') : '<span class="no-surf">No real surf option</span>'}</td>`,
+      travel: `<td data-col="travel">${fitBar(d.travel)}</td>`,
       nature: `<td data-col="nature">${stars(d.nature)}<span class="short-phrase">${d.natureShort}</span></td>`,
       college: `<td data-col="college">${stars(d.college)}<span class="short-phrase">${d.collegeShort}</span></td>`,
       weather: `<td data-col="weather">${linkToSource(d.weatherShort, d, 'weather')}</td>`,
@@ -872,6 +962,7 @@ const COMPARE_DIMENSIONS = [
   {label:'Match Score', value:d=>matchScore(d), higherBetter:true, render:d=>fitBar(Math.round(matchScore(d)))},
   {label:'Fishing Fit', value:d=>d.fit, higherBetter:true, render:d=>`${fitBar(d.fit)}${bulletsHtml(d.fitNote)}${sourceLinksFor(d,'fit')}`},
   {label:'Surf Fit', value:d=>d.surf, higherBetter:true, render:d=> (d.surf>0 ? fitBar(d.surf) : '<span class="no-surf">No real surf option</span>') + bulletsHtml(d.surfNote) + sourceLinksFor(d,'surf')},
+  {label:'Travel Access', value:d=>d.travel, higherBetter:true, render:d=>`${fitBar(d.travel)}${bulletsHtml(d.travelNote)}`},
   {label:'Nature', value:d=>d.nature, higherBetter:true, render:d=>`${stars(d.nature)}${bulletsHtml(d.natureNote)}`},
   {label:'College Scene', value:d=>d.college, higherBetter:true, render:d=>`${stars(d.college)}${bulletsHtml(d.collegeNote)}`},
   {label:'Weather Jan–May', render:d=>`<strong>${d.weatherShort}</strong>${bulletsHtml(d.weatherDetail)}${sourceLinksFor(d,'weather')}`},
@@ -961,6 +1052,7 @@ function attachRemoveHandlers(){
     });
   });
 }
+
 
 syncSortControls();
 render();
