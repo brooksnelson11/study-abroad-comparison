@@ -110,7 +110,12 @@
   }
   .chip-toggle.active { background: var(--blue-450); color: white; border-color: var(--blue-450); }
 
-  table { width: 100%; border-collapse: collapse; background: var(--surface); border-radius: 10px; overflow: hidden; }
+  /* No overflow:hidden here — it silently breaks position:sticky on thead th (the table becomes
+     its own "nearest scrolling ancestor," which never actually scrolls, so sticky has nothing
+     to stick relative to). Corner rounding moves to the first/last header cells instead. */
+  table { width: 100%; border-collapse: collapse; background: var(--surface); }
+  thead tr th:first-child { border-top-left-radius: 10px; }
+  thead tr th:last-child { border-top-right-radius: 10px; }
   thead th {
     text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.03em;
     color: var(--text-muted); padding: 10px 8px; border-bottom: 2px solid var(--baseline);
@@ -125,15 +130,23 @@
   .locname { font-weight: 600; display: block; }
   .hemi { font-size: 10.5px; color: var(--text-muted); font-weight: 400; }
   .overall-rank { font-size: 10px; color: var(--text-muted); font-weight: 600; display: inline-block; margin-left: 6px; background: var(--surface-2); padding: 1px 6px; border-radius: 999px; }
-  .del-x { display: inline-block; margin-left: 8px; background: none; border: 1px solid transparent; color: var(--critical); font-size: 12px; font-weight: 700; cursor: pointer; padding: 1px 6px; border-radius: 999px; line-height: 1.4; }
+  .del-x { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; margin-left: 8px; background: none; border: 1px solid transparent; color: var(--critical); cursor: pointer; padding: 0; border-radius: 999px; -webkit-tap-highlight-color: transparent; }
   .del-x:hover { background: rgba(208,59,59,0.12); border-color: var(--critical); }
   a.badge-link { text-decoration: none; cursor: pointer; border-bottom: 1px dashed var(--border); }
   a.badge-link:hover { opacity: 0.8; }
   .rank { color: var(--text-muted); font-size: 12px; width: 24px; }
   .chev { display: inline-block; width: 12px; color: var(--text-muted); font-size: 10px; }
-  tr.draggable-row.dragging { opacity: 0.4; }
+  tr.draggable-row.dragging { opacity: 0.4; user-select: none; -webkit-user-select: none; }
   tr.draggable-row.drag-over-target { box-shadow: inset 0 2px 0 var(--blue-450); }
-  .drag-handle { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; margin: -8px 0 -8px -4px; color: var(--text-muted); cursor: grab; font-size: 16px; touch-action: none; }
+  .drag-handle {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px; margin: -8px 0 -8px -6px; color: var(--text-muted); cursor: grab;
+    touch-action: none;           /* stop the browser claiming this gesture as a page-scroll */
+    -webkit-user-drag: none;      /* stop iOS's own "lift and drag" ghost image competing with Pointer Events */
+    -webkit-touch-callout: none;  /* stop the long-press copy/define callout menu from popping up mid-hold */
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
   .chk-cell { width: 20px; text-align: center; }
   .chk-cell input { cursor: pointer; }
 
@@ -272,7 +285,7 @@
       <div class="hint">18 locations researched across your Jan 19 – May 15 window. Type to filter, click headers to sort, click a row to expand/collapse just that one.</div>
     </div>
 
-    <div style="overflow-x:auto;">
+    <div style="overflow-x:auto; overflow-y:auto; max-height:75vh; border-radius:10px;">
     <table id="tbl">
       <thead>
         <tr id="headRow"></tr>
@@ -598,8 +611,8 @@ function render(){
     const open = allExpanded || expandedIds.has(d.id);
     const cellsHtml = {
       chk: `<td class="chk-cell" data-col="chk"><input type="checkbox" class="compare-check" data-id="${d.id}" ${selectedIds.has(d.id)?'checked':''}></td>`,
-      rank: `<td class="rank" data-col="rank">${dragEnabled ? '<span class="drag-handle" title="Drag to reorder">⠿</span> ' : ''}${i+1}</td>`,
-      name: `<td data-col="name"><span class="chev">${open ? '▾' : '▸'}</span><span class="locname">${d.name}</span><span class="hemi">${d.hemi === 'S' ? 'S. Hemisphere' : 'N. Hemisphere'}</span>${rankBadge(d.id)}${IS_LIVE_SITE ? `<button class="del-x" data-id="${d.id}" data-name="${d.name.replace(/"/g,'&quot;')}" title="Remove ${d.name} permanently">✕</button>` : ''}</td>`,
+      rank: `<td class="rank" data-col="rank">${dragEnabled ? `<span class="drag-handle" title="Drag to reorder"><svg viewBox="0 0 24 24" width="16" height="16" style="display:block"><circle cx="9" cy="6" r="1.6" fill="currentColor"/><circle cx="15" cy="6" r="1.6" fill="currentColor"/><circle cx="9" cy="12" r="1.6" fill="currentColor"/><circle cx="15" cy="12" r="1.6" fill="currentColor"/><circle cx="9" cy="18" r="1.6" fill="currentColor"/><circle cx="15" cy="18" r="1.6" fill="currentColor"/></svg></span>` : ''}${i+1}</td>`,
+      name: `<td data-col="name"><span class="chev">${open ? '▾' : '▸'}</span><span class="locname">${d.name}</span><span class="hemi">${d.hemi === 'S' ? 'S. Hemisphere' : 'N. Hemisphere'}</span>${rankBadge(d.id)}${IS_LIVE_SITE ? `<button class="del-x" data-id="${d.id}" data-name="${d.name.replace(/"/g,'&quot;')}" title="Remove ${d.name} permanently"><svg viewBox="0 0 24 24" width="11" height="11" style="display:block"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></button>` : ''}</td>`,
       match: `<td data-col="match">${fitBar(Math.round(d.match))}</td>`,
       fit: `<td data-col="fit">${linkToSource(fitBar(d.fit), d, 'fit')}${d.fishingType ? `<span class="short-phrase">${d.fishingType}</span>` : ''}</td>`,
       surf: `<td data-col="surf">${d.surf > 0 ? linkToSource(fitBar(d.surf), d, 'surf') : '<span class="no-surf">No real surf option</span>'}</td>`,
