@@ -131,10 +131,9 @@
   a.badge-link:hover { opacity: 0.8; }
   .rank { color: var(--text-muted); font-size: 12px; width: 24px; }
   .chev { display: inline-block; width: 12px; color: var(--text-muted); font-size: 10px; }
-  tr.draggable-row { cursor: grab; }
   tr.draggable-row.dragging { opacity: 0.4; }
   tr.draggable-row.drag-over-target { box-shadow: inset 0 2px 0 var(--blue-450); }
-  .drag-handle { color: var(--text-muted); cursor: grab; font-size: 13px; margin-right: 2px; }
+  .drag-handle { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; margin: -8px 0 -8px -4px; color: var(--text-muted); cursor: grab; font-size: 16px; touch-action: none; }
   .chk-cell { width: 20px; text-align: center; }
   .chk-cell input { cursor: pointer; }
 
@@ -322,7 +321,7 @@ const DATA = [
 
 // Brooks's manual drag-to-reorder sequence — empty until he drags something, then persisted
 // server-side by /api/study_abroad_save_order (same "sticks permanently" treatment as add/delete).
-const CUSTOM_ORDER = [];
+const CUSTOM_ORDER = ["tasmania","dunedin","zagreb","galway","florence","vancouver","bariloche","wellington","ljubljana","grenoble","pamplona","capetown","edinburgh","granada","barcelona","valdivia","bilbao","sansebastian"];
 
 const COLUMN_DEFS = [
   {key:'fit', label:'Fishing Fit'},
@@ -513,7 +512,6 @@ const IS_LIVE_SITE = location.hostname === 'hermes-vps.tail2f597b.ts.net';
 
 let sortKey = 'match', sortDir = -1;
 let customOrder = [...CUSTOM_ORDER];
-let draggedId = null;
 let filterText = '';
 let hemiFilter = 'all';
 let confirmedOnly = false;
@@ -592,7 +590,6 @@ function render(){
     const dragEnabled = IS_LIVE_SITE && sortKey === 'custom';
     tr.className = 'row' + (dragEnabled ? ' draggable-row' : '');
     tr.dataset.id = d.id;
-    if (dragEnabled) tr.draggable = true;
     const open = allExpanded || expandedIds.has(d.id);
     const cellsHtml = {
       chk: `<td class="chk-cell" data-col="chk"><input type="checkbox" class="compare-check" data-id="${d.id}" ${selectedIds.has(d.id)?'checked':''}></td>`,
@@ -926,39 +923,57 @@ async function saveCustomOrder(){
   }
 }
 
-document.getElementById('tbody').addEventListener('dragstart', (e) => {
+// Pointer Events, not HTML5 draggable/dragstart — HTML5 drag-and-drop never fires from touch,
+// and Brooks uses this on the iPad. One code path handles mouse and finger. The handle is a
+// dedicated small target (not the whole row), so there's no scroll-vs-drag ambiguity to
+// disambiguate with a hold-delay — a pointerdown on the handle IS the drag-start signal.
+let dragState = null; // {id, tr}
+function clearDragVisuals(){
+  document.querySelectorAll('.dragging, .drag-over-target').forEach(el => el.classList.remove('dragging', 'drag-over-target'));
+}
+function onHandlePointerDown(e){
   const tr = e.target.closest('tr.draggable-row');
-  if (!tr) return;
-  draggedId = tr.dataset.id;
-  e.dataTransfer.effectAllowed = 'move';
+  if (!tr || (dragState && dragState.live)) return; // multi-pointer guard: ignore a 2nd finger mid-drag
+  e.preventDefault();
+  dragState = {id: tr.dataset.id, tr, live: true, pointerId: e.pointerId};
+  e.target.setPointerCapture(e.pointerId); // keeps events coming even if the finger leaves the handle
   tr.classList.add('dragging');
-});
-document.getElementById('tbody').addEventListener('dragover', (e) => {
-  const tr = e.target.closest('tr.draggable-row');
-  if (!tr || !draggedId || tr.dataset.id === draggedId) return;
-  e.preventDefault();
-  document.querySelectorAll('.drag-over-target').forEach(el => el.classList.remove('drag-over-target'));
-  tr.classList.add('drag-over-target');
-});
-document.getElementById('tbody').addEventListener('dragend', () => {
-  document.querySelectorAll('.dragging, .drag-over-target').forEach(el => el.classList.remove('dragging', 'drag-over-target'));
-});
-document.getElementById('tbody').addEventListener('drop', (e) => {
-  const tr = e.target.closest('tr.draggable-row');
-  document.querySelectorAll('.dragging, .drag-over-target').forEach(el => el.classList.remove('dragging', 'drag-over-target'));
-  if (!tr || !draggedId || tr.dataset.id === draggedId) { draggedId = null; return; }
-  e.preventDefault();
+  document.addEventListener('touchmove', blockScroll, {passive: false});
+}
+function blockScroll(e){ if (dragState && dragState.live) e.preventDefault(); }
+function onDragPointerMove(e){
+  if (!dragState || !dragState.live || e.pointerId !== dragState.pointerId) return;
+  const el = document.elementFromPoint(e.clientX, e.clientY);
+  const tr = el && el.closest ? el.closest('tr.draggable-row') : null;
+  document.querySelectorAll('.drag-over-target').forEach(x => x.classList.remove('drag-over-target'));
+  if (tr && tr.dataset.id !== dragState.id) tr.classList.add('drag-over-target');
+}
+function onDragPointerUp(e){
+  if (!dragState || e.pointerId !== dragState.pointerId) return;
+  document.removeEventListener('touchmove', blockScroll);
+  const el = document.elementFromPoint(e.clientX, e.clientY);
+  const targetTr = el && el.closest ? el.closest('tr.draggable-row') : null;
+  clearDragVisuals();
+  const draggedId = dragState.id;
+  dragState = null;
+  if (!targetTr || targetTr.dataset.id === draggedId) return;
   // customOrder must contain every current id (so a drag right after a fresh add/delete still
   // works) — seed any missing ones in natural DATA order before splicing.
   DATA.forEach(d => { if (!customOrder.includes(d.id)) customOrder.push(d.id); });
   const from = customOrder.indexOf(draggedId);
-  const to = customOrder.indexOf(tr.dataset.id);
+  const to = customOrder.indexOf(targetTr.dataset.id);
   customOrder.splice(from, 1);
   customOrder.splice(to, 0, draggedId);
-  draggedId = null;
   render();
   saveCustomOrder();
+}
+document.getElementById('tbody').addEventListener('pointerdown', (e) => {
+  if (e.target.closest('.drag-handle')) onHandlePointerDown(e);
 });
+document.addEventListener('pointermove', onDragPointerMove);
+document.addEventListener('pointerup', onDragPointerUp);
+document.addEventListener('pointercancel', () => { if (dragState) { clearDragVisuals(); document.removeEventListener('touchmove', blockScroll); dragState = null; } });
+window.addEventListener('blur', () => { if (dragState) { clearDragVisuals(); document.removeEventListener('touchmove', blockScroll); dragState = null; } });
 
 syncSortControls();
 render();
