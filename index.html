@@ -605,7 +605,7 @@ function render(){
   tbody.innerHTML = '';
   filtered.forEach((d, i) => {
     const tr = document.createElement('tr');
-    const dragEnabled = sortKey === 'custom'; // works on any host — see saveCustomOrder() for where it persists to
+    const dragEnabled = true; // always draggable — dragging auto-switches into custom order (see onDragPointerUp)
     tr.className = 'row' + (dragEnabled ? ' draggable-row' : '');
     tr.dataset.id = d.id;
     const open = allExpanded || expandedIds.has(d.id);
@@ -993,8 +993,15 @@ function onDragPointerUp(e){
   const draggedId = dragState.id;
   dragState = null;
   if (!targetTr || targetTr.dataset.id === draggedId) return;
-  // customOrder must contain every current id (so a drag right after a fresh add/delete still
-  // works) — seed any missing ones in natural DATA order before splicing.
+  // Dragging from any sort mode drops you into custom order, seeded from the rows exactly as
+  // they appear on screen right now — otherwise the splice would reorder a list the user isn't
+  // looking at. Rows hidden by a filter keep their relative order, appended after the visible ones.
+  if (sortKey !== 'custom') {
+    const visible = [...document.querySelectorAll('#tbody tr.row')].map(tr => tr.dataset.id);
+    customOrder = visible.concat(DATA.map(d => d.id).filter(id => !visible.includes(id)));
+    sortKey = 'custom';
+    syncSortControls();
+  }
   DATA.forEach(d => { if (!customOrder.includes(d.id)) customOrder.push(d.id); });
   const from = customOrder.indexOf(draggedId);
   const to = customOrder.indexOf(targetTr.dataset.id);
