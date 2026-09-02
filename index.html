@@ -392,6 +392,7 @@
       <span class="label" style="font-size:11.5px;color:var(--text-muted);">Rank by:</span>
       <select id="sortKeySelect">
         <option value="match">Match Score</option>
+        <option value="utk">UTK Spring Path</option>
         <option value="fit">Fishing Fit</option>
         <option value="surf">Surf Fit</option>
         <option value="nature">Nature</option>
@@ -409,7 +410,7 @@
         <option value="N">Northern only</option>
         <option value="S">Southern only</option>
       </select>
-      <div class="chip-toggle" id="confirmedOnly" data-active="false">✓ Confirmed program only</div>
+      <div class="chip-toggle" id="confirmedOnly" data-active="false">✓ UTK path confirmed only</div>
       <div class="chip-toggle" id="safeOnly" data-active="false">🛡 Hide safety flags</div>
       <div class="chip-toggle" id="surfOnly" data-active="false">🏄 Real surf option only</div>
       <span class="zoom-ctl" title="Shrink or enlarge the data itself so more fits on screen">
@@ -419,7 +420,7 @@
         <button id="zoomIn" aria-label="Zoom in">+</button>
         <button id="zoomFit" title="Shrink until the whole table fits with no sideways scrolling">Fit</button>
       </span>
-      <div class="hint">19 locations researched across your Jan 19 – May 15 window. Type to filter, click headers to sort, click a row to expand/collapse just that one.</div>
+      <div class="hint">25 locations researched across your Jan 19 – May 15 window. Type to filter, click headers to sort, click a row to expand/collapse just that one.</div>
     </div>
 
     <div style="overflow-x:auto; overflow-y:auto; max-height:75vh; border-radius:10px;">
@@ -535,6 +536,9 @@ function programBadge(status){
 // UTK Vols Abroad Spring catalog status. Deliberately three states, not two — "not on the
 // catalog" is NOT the same as "impossible", and a city must never look dead just because the
 // listing card didn't show it. Every one of these needs an IPSA confirmation.
+function utkGoodness(status){
+  return {listed: 2, nearby: 1, none: 0}[status] ?? 0;
+}
 function utkTag(status){
   const map = {
     listed: ['utk-listed', '✓ On the Spring list'],
@@ -784,7 +788,7 @@ function render(){
 
   let filtered = rows.filter(r => {
     if (hemiFilter !== 'all' && r.hemi !== hemiFilter) return false;
-    if (confirmedOnly && r.program !== 'confirmed') return false;
+    if (confirmedOnly && r.utkStatus !== 'listed') return false;
     if (hideFlagged && r.safety === 'flag') return false;
     if (realSurfOnly && r.surf < 15) return false;
     if (filterText) {
@@ -815,6 +819,7 @@ function render(){
       case 'transit': av=transitScore(a.transitTier); bv=transitScore(b.transitTier); break;
       case 'safety': av=safetyScore(a.safety); bv=safetyScore(b.safety); break;
       case 'program': return sortDir * a.program.localeCompare(b.program);
+      case 'utk': av=utkGoodness(a.utkStatus); bv=utkGoodness(b.utkStatus); if(av===bv){av=a.match;bv=b.match;} break;
       default: av=a.match; bv=b.match;
     }
     return sortDir * (av - bv);
